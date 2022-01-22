@@ -10,8 +10,8 @@ namespace GK1_lab4
 {
     internal class Model
     {
-        List<(int index, double x, double y, double z)> vertices = new List<(int index, double x, double y, double z)>();
-        List<(int index, List<int> vertexIndices)> faces = new List<(int index, List<int> vertexIndices)>();
+        public List<(int index, double x, double y, double z)> vertices = new List<(int index, double x, double y, double z)>();
+        public List<(int index, List<int> vertexIndices)> faces = new List<(int index, List<int> vertexIndices)>();
         public Model(string fileName)
         {
             int vCount = 0;
