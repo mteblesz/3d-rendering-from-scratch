@@ -45,7 +45,7 @@ namespace GK1_lab4
             };
             //timer1.Enabled = true;
 
-
+            Model m = new Model("../../../cube.obj");
 
 
 
