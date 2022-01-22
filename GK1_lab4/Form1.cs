@@ -15,57 +15,44 @@ namespace GK1_lab4
 
     public partial class Form1 : Form
     {
-        
+        //todo hermetyzacja
+        Model model;
+        vertex[] vertices;
+        Point[] vs;
+
+
         public Form1()
         {
             InitializeComponent();
         }
         private readonly double A = 20;
         double alfa = Math.PI/10;
-        //  10
-        //6 9 7 8
-        //2 5 3 4
-        //   1
-        double[,] points;
-        
+
         private void Form1_Load(object sender, EventArgs e)
         {
-            points = new double[,]{
-                {0,0,0,0 }, //0 - nieuzywane 
-                { 0, -2*A, 0, 1 }, //1
-                {-A, -A, -A, 1 }, //2
-                { A, -A, -A, 1},
-                { A, -A, A, 1},
-                { -A, -A, A, 1}, //5
-                { -A, A, -A, 1}, //6
-                {A, A, -A, 1 },
-                {A, A, A, 1 }, //8
-                {-A, A, A, 1},
-                {0, 2* A, 0, 1 } //10
-            };
-            //timer1.Enabled = true;
 
-            Model m = new Model("../../../cube.obj");
+            model = new Model("../../../cube3.obj");
+            vertices = model.vertices.ToArray();
+            vs = new Point[vertices.Length + 1]; //indexed by vertices.index property
 
 
 
-
-
+            timer1.Enabled = true;
         }
 
-        Point[] vs = new Point[11];
+
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             alfa += Math.PI/20;
             Matrix<double> M = P(this.Size.Width, this.Size.Height) * T(0, 0, 4 * A) * R(alfa);
-            for(int i=1; i<=10; i++)
+            foreach(var vertex in vertices)
             {
-                double[] Ai = { points[i, 0], points[i, 1], points[i, 2], points[i, 3] };
+                double[] Ai = { vertex.x, vertex.y, vertex.z, vertex.w };
                 Vector<double> vc = M * DenseVector.OfArray(Ai);
                 Vector<double> vn = vc / vc[3];
-                vs[i].X = (int)(this.Width * (1 + vn[0]) / 2);
-                vs[i].Y = (int)(this.Height * (1 + vn[1]) / 2);
+                vs[vertex.index].X = (int)(this.Width * (1 + vn[0]) / 2);
+                vs[vertex.index].Y = (int)(this.Height * (1 + vn[1]) / 2);
             }
             this.Invalidate();
         }
@@ -75,35 +62,16 @@ namespace GK1_lab4
 
             Pen pen = new Pen(Color.FromArgb(255, 0, 0, 0));
 
+            foreach(var face in model.faces)
+            {
+                int v_i = face.vertexIndices.First();
+                foreach(int u_i in face.vertexIndices)
+                {
+                    e.Graphics.DrawLine(pen, vs[v_i], vs[u_i]);
+                    v_i = u_i;
+                }
 
-            //  10
-            //6 9 7 8
-            //2 5 3 4
-            //   1
-            e.Graphics.DrawLine(pen, vs[10], vs[6]);
-            e.Graphics.DrawLine(pen, vs[10], vs[7]);
-            e.Graphics.DrawLine(pen, vs[10], vs[8]);
-            e.Graphics.DrawLine(pen, vs[10], vs[9]);
-
-            e.Graphics.DrawLine(pen, vs[6], vs[7]);
-            e.Graphics.DrawLine(pen, vs[7], vs[8]);
-            e.Graphics.DrawLine(pen, vs[8], vs[9]);
-            e.Graphics.DrawLine(pen, vs[9], vs[6]);
-
-            e.Graphics.DrawLine(pen, vs[6], vs[2]);
-            e.Graphics.DrawLine(pen, vs[7], vs[3]);
-            e.Graphics.DrawLine(pen, vs[8], vs[4]);
-            e.Graphics.DrawLine(pen, vs[9], vs[5]);
-
-            e.Graphics.DrawLine(pen, vs[2], vs[3]);
-            e.Graphics.DrawLine(pen, vs[3], vs[4]);
-            e.Graphics.DrawLine(pen, vs[4], vs[5]);
-            e.Graphics.DrawLine(pen, vs[5], vs[2]);
-
-            e.Graphics.DrawLine(pen, vs[1], vs[2]);
-            e.Graphics.DrawLine(pen, vs[1], vs[3]);
-            e.Graphics.DrawLine(pen, vs[1], vs[4]);
-            e.Graphics.DrawLine(pen, vs[1], vs[5]);
+            }
         }
 
 

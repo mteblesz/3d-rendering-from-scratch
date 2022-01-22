@@ -8,9 +8,29 @@ using System.Threading.Tasks;
 
 namespace GK1_lab4
 {
+    public class vertex
+    {
+        public int index;
+        public double x;
+        public double y;
+        public double z;
+        public double w;
+        public vertex(int index, double x, double y, double z, double w)
+        {
+            this.index = index;
+            this.x = x; 
+            this.y = y;
+            this.z = z;
+            this.w = w;
+        }
+        public vertex getTransformed()
+        {
+            return this;
+        }
+    }
     internal class Model
     {
-        public List<(int index, double x, double y, double z)> vertices = new List<(int index, double x, double y, double z)>();
+        public List<vertex> vertices = new List<vertex>();
         public List<(int index, List<int> vertexIndices)> faces = new List<(int index, List<int> vertexIndices)>();
         public Model(string fileName)
         {
@@ -23,9 +43,11 @@ namespace GK1_lab4
                 if (line[0] == 'v' && line[1] == ' ')
                 {
                     string[] parts = line.Split(' ');
-                    vertices.Add((++vCount, Double.Parse(parts[1], CultureInfo.InvariantCulture), 
+                    vertices.Add(new vertex(++vCount, Double.Parse(parts[1], CultureInfo.InvariantCulture), 
                                             Double.Parse(parts[2], CultureInfo.InvariantCulture), 
-                                            Double.Parse(parts[3], CultureInfo.InvariantCulture)));
+                                            Double.Parse(parts[3], CultureInfo.InvariantCulture),
+                                            1
+                                            ));
                 }
                 //faces - triagles A-B-C
                 else if (line[0] == 'f' && line[1] == ' ') 
