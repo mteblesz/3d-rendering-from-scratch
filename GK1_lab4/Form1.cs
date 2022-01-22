@@ -27,6 +27,7 @@ namespace GK1_lab4
         //2 5 3 4
         //   1
         double[,] points;
+        
         private void Form1_Load(object sender, EventArgs e)
         {
             points = new double[,]{
@@ -42,7 +43,14 @@ namespace GK1_lab4
                 {-A, A, A, 1},
                 {0, 2* A, 0, 1 } //10
             };
-            timer1.Enabled = true;
+            //timer1.Enabled = true;
+
+
+
+
+
+
+
         }
 
         Point[] vs = new Point[11];
