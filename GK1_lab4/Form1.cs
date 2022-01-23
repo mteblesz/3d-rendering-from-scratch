@@ -32,7 +32,7 @@ namespace GK1_lab4
         private void Form1_Load(object sender, EventArgs e)
         {
 
-            model = new Model("../../../many.obj");
+            model = new Model("../../../models/many.obj");
             vertices = model.vertices.ToArray();
             vs = new Point[vertices.Length + 1]; //indexed by vertices.index property
 
