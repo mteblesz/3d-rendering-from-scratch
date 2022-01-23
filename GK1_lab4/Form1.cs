@@ -37,7 +37,7 @@ namespace GK1_lab4
             vs = new Point[vertices.Length + 1]; //indexed by vertices.index property
 
 
-            timer1.Interval = 2000;
+            timer1.Interval = 1000;
             timer1.Enabled = true;
         }
 
