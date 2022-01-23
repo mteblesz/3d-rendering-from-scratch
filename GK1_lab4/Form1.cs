@@ -20,23 +20,24 @@ namespace GK1_lab4
         vertex[] vertices;
         Point[] vs;
 
+        private double A = 2; //Oddalenie
+        double alfa = Math.PI / 10;
+        double alfaplus = Math.PI / 10;
 
         public Form1()
         {
             InitializeComponent();
         }
-        private readonly double A = 20;
-        double alfa = Math.PI/10;
 
         private void Form1_Load(object sender, EventArgs e)
         {
 
-            model = new Model("../../../cube3.obj");
+            model = new Model("../../../many.obj");
             vertices = model.vertices.ToArray();
             vs = new Point[vertices.Length + 1]; //indexed by vertices.index property
 
 
-
+            timer1.Interval = 2000;
             timer1.Enabled = true;
         }
 
@@ -44,7 +45,7 @@ namespace GK1_lab4
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            alfa += Math.PI/20;
+            alfa += alfaplus;
             Matrix<double> M = P(this.Size.Width, this.Size.Height) * T(0, 0, 4 * A) * R(alfa);
             foreach(var vertex in vertices)
             {
