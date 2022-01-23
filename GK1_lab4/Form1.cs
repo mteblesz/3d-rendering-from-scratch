@@ -69,16 +69,12 @@ namespace GK1_lab4
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-
-            //Pen pen = new Pen(Color.FromArgb(255, 0, 0, 0));
-
             foreach(var face in model.faces)
             {
                 int v_i = face.vertexIndices.First();
                 foreach(int u_i in face.vertexIndices)
                 {
                     BresehamLine.drawLine(bmpFront, vs[v_i], vs[u_i]);
-                    //e.Graphics.DrawLine(pen, vs[v_i], vs[u_i]);
                     v_i = u_i;
                 }
 
