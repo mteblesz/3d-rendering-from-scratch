@@ -23,7 +23,9 @@ namespace GK1_lab4
         private double A = 2; //Oddalenie
         double alfa = Math.PI / 10;
         double alfaplus = Math.PI / 10;
+        int refreshInterval = 100;
 
+        Bitmap bmpFront;
         public Form1()
         {
             InitializeComponent();
@@ -31,13 +33,16 @@ namespace GK1_lab4
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            // Model
             model = new Model("../../../models/many.obj");
             vertices = model.vertices.ToArray();
             vs = new Point[vertices.Length + 1]; //indexed by vertices.index property
 
+            // Graphics
+            bmpFront = new Bitmap(pictureBox1.Image);
 
-            timer1.Interval = 1000;
+            // timer
+            timer1.Interval = refreshInterval;
             timer1.Enabled = true;
         }
 
@@ -55,20 +60,25 @@ namespace GK1_lab4
                 vs[vertex.index].X = (int)(this.Width * (1 + vn[0]) / 2);
                 vs[vertex.index].Y = (int)(this.Height * (1 + vn[1]) / 2);
             }
+
+            //refresh
             this.Invalidate();
+            Graphics.FromImage(bmpFront).Clear(Color.White);
+            pictureBox1.Image = bmpFront;
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
 
-            Pen pen = new Pen(Color.FromArgb(255, 0, 0, 0));
+            //Pen pen = new Pen(Color.FromArgb(255, 0, 0, 0));
 
             foreach(var face in model.faces)
             {
                 int v_i = face.vertexIndices.First();
                 foreach(int u_i in face.vertexIndices)
                 {
-                    e.Graphics.DrawLine(pen, vs[v_i], vs[u_i]);
+                    BresehamLine.drawLine(bmpFront, vs[v_i], vs[u_i]);
+                    //e.Graphics.DrawLine(pen, vs[v_i], vs[u_i]);
                     v_i = u_i;
                 }
 

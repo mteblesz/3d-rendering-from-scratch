@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace GK1_lab4
 {
+    //todo zrobic wirtualne pole bitmapowe i z tego wycinac bitmape zeby jak punkt pojdzie poza nia to zeby rysowało
     internal class BresehamLine
     {
         public static void drawLine(Bitmap bmp, Point start, Point end)
@@ -15,10 +16,12 @@ namespace GK1_lab4
             => drawColoredLine(bmp, start, end, Color.White);
         public static void eraseLine(Bitmap bmp, Point start, Point end, Color color)
             => drawColoredLine(bmp, start, end, color);
-        public static void drawColoredLine(Bitmap bmp, Point startc, Point endc, Color color)
+        public static void drawColoredLine(Bitmap bmp, Point start, Point end, Color color)
         {
-            Point start = new Point(startc.X, startc.Y);
-            Point end = new Point(endc.X, endc.Y);
+            if (start.X >= bmp.Width || start.Y >= bmp.Height) return;
+            if (end.X >= bmp.Width || end.Y >= bmp.Height) return;
+            if (start.X < 0 || start.Y < 0 || end.X < 0 || end.Y < 0) return;
+                
             int x1 = start.X;
             int y1 = start.Y;
             int x2 = end.X;
