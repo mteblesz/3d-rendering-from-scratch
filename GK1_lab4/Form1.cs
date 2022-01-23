@@ -38,7 +38,7 @@ namespace GK1_lab4
 
 
             timer1.Interval = 2000;
-            timer1.Enabled = true;
+            //timer1.Enabled = true;
         }
 
 
