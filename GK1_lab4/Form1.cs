@@ -38,7 +38,7 @@ namespace GK1_lab4
 
 
             timer1.Interval = 2000;
-            //timer1.Enabled = true;
+            timer1.Enabled = true;
         }
 
 
@@ -79,6 +79,7 @@ namespace GK1_lab4
 
 
         //------------------------------------------------------------------------
+        //todo zmienic to w/h na 1
         private Matrix<double> P(double w, double h)
         {
             return DenseMatrix.OfArray(new double[,] {
