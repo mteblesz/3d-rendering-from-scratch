@@ -28,6 +28,9 @@ namespace GK1_lab4
         double alfa = Math.PI / 10;
         double alfaplus = Math.PI / 100;
         int refreshInterval = 16;
+        double[] lightDir = { 0, 0, -1 , 0};
+
+        Vector<double> lightDirVector;
 
         Bitmap bmpFront;
         public Form1()
@@ -43,8 +46,12 @@ namespace GK1_lab4
             vertices = model.vertices.ToArray();
             vs = new Point[vertices.Length + 1]; //indexed by vertices.index propertly (indices start at 1 in .obj files)
 
+            //light
+            lightDirVector = DenseVector.OfArray(lightDir).Normalize(1);
+
             // Graphics
             bmpFront = new Bitmap(pictureBox1.Image);
+
 
             // timer
             timer1.Interval = refreshInterval;
@@ -70,25 +77,32 @@ namespace GK1_lab4
             //Light
             Parallel.ForEach(model.faces, face =>
             {
-                
+                Vector<double> lD = lightDirVector * R(-2*alfa);
+                double intensity = lD[0] * face.normal[0] + lD[1] * face.normal[1] + lD[2] * face.normal[2]; //dot product lD * normal
+                //intensity = Math.Max(intensity, 1);
+                if (intensity >= 0)
+                    face.color = Color.FromArgb((int)(255 * intensity), (int)(255 * intensity), (int)(255 * intensity));
+                else
+                    face.color = Color.Transparent;
             });
 
             //Drawing
             Graphics.FromImage(bmpFront).Clear(Color.Black);
             foreach (var face in model.faces)
             {
+                if (face.color == Color.Transparent) continue;
                 //draw face filled
                 Point[] ind = { vs[face.indexA], vs[face.indexB], vs[face.indexC] };
                 Filling.Draw(bmpFront, ind, face.color);
                 //edges
-                //BresehamLine.Draw(bmpFront, ind[0], ind[1], Color.White);
-                //BresehamLine.Draw(bmpFront, ind[1], ind[2], Color.White);
-                //BresehamLine.Draw(bmpFront, ind[2], ind[0], Color.White);
+                //BresehamLine.Draw(bmpFront, ind[0], ind[1], Color.Orange);
+                //BresehamLine.Draw(bmpFront, ind[1], ind[2], Color.Orange);
+                //BresehamLine.Draw(bmpFront, ind[2], ind[0], Color.Orange);
             }
             pictureBox1.Image = bmpFront;
         }
 
-        
+
 
 
         //------------------------------------------------------------------------
@@ -96,7 +110,7 @@ namespace GK1_lab4
         private Matrix<double> P(double w, double h)
         {
             return DenseMatrix.OfArray(new double[,] {
-            {w/h ,0,0,0},
+            {1 ,0,0,0},
             {0,1,0,0},
             {0,0,0,1},
             {0,0,-1,0}});
