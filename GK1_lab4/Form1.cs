@@ -26,8 +26,8 @@ namespace GK1_lab4
 
         private double A = 2.5; //Oddalenie  //todo na przyblizeniu uciekaja wierzcholski i ucieka czesc figury (wali error bmp)
         double alfa = Math.PI / 10;
-        double alfaplus = Math.PI / 10;
-        int refreshInterval = 100;
+        double alfaplus = Math.PI / 100;
+        int refreshInterval = 16;
 
         Bitmap bmpFront;
         public Form1()
