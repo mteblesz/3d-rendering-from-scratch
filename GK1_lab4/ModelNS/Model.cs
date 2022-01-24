@@ -11,7 +11,7 @@ namespace GK1_lab4.ModelNS
     public class Model
     {
         public List<Vertex> vertices = new List<Vertex>();
-        public List<(int index, List<int> VertexIndices)> faces = new List<(int index, List<int> VertexIndices)>();
+        public List<Face> faces = new List<Face>();
         public Model(string fileName)
         {
             int vCount = 0;
@@ -33,14 +33,15 @@ namespace GK1_lab4.ModelNS
                 else if (line[0] == 'f' && line[1] == ' ') 
                 {
                     string[] parts = line.Split(' ');
-                    var face = new List<int>();
-                    for(int i=1; i<parts.Length; i++)
+                    var indexabc = new int[3];
+                    for(int i=0; i<3; i++)
                     {
-                        string[] slashParts = parts[i].Split('/');
-                        face.Add(int.Parse(slashParts[0], CultureInfo.InvariantCulture));
+                        string[] slashParts = parts[i+1].Split('/'); //ignore parts[0] := "f"
+                        indexabc[i] = int.Parse(slashParts[0], CultureInfo.InvariantCulture);
                     }
-                    faces.Add((++fCount, face));
+                    faces.Add(new Face(++fCount, indexabc[0], indexabc[1], indexabc[2]));
                 }
+
             }
             
         }

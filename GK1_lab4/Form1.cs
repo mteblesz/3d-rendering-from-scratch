@@ -70,15 +70,12 @@ namespace GK1_lab4
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            //todo to chyba powinnnobyc po prostu w refreshu
             foreach(var face in model.faces)
             {
-                int v_i = face.VertexIndices.First();
-                foreach(int u_i in face.VertexIndices)
-                {
-                    BresehamLine.Draw(bmpFront, vs[v_i], vs[u_i], Color.White);
-                    v_i = u_i;
-                }
-
+                BresehamLine.Draw(bmpFront, vs[face.indexA], vs[face.indexB], Color.White);
+                BresehamLine.Draw(bmpFront, vs[face.indexB], vs[face.indexC], Color.White);
+                BresehamLine.Draw(bmpFront, vs[face.indexC], vs[face.indexA], Color.White);
             }
         }
 

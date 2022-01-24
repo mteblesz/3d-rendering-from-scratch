@@ -8,11 +8,11 @@ namespace GK1_lab4.ModelNS
 {
     public class Vertex
     {
-        public int index;
-        public double x;
-        public double y;
-        public double z;
-        public double w;
+        public int index { get; set; }
+        public double x { get; set; }
+        public double y { get; set; }
+        public double z { get; set; }
+        public double w { get; set; }
         public Vertex(int index, double x, double y, double z, double w)
         {
             this.index = index;
@@ -20,6 +20,10 @@ namespace GK1_lab4.ModelNS
             this.y = y;
             this.z = z;
             this.w = w;
+        }
+        public Vertex()
+        {
+            //empty
         }
     }
 }
