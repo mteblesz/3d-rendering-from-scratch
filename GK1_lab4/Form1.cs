@@ -51,6 +51,8 @@ namespace GK1_lab4
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+
+
             alfa += alfaplus;
             Matrix<double> M = P(this.Size.Width, this.Size.Height) * T(0, 0, 4 * A) * R(alfa);
             foreach(var Vertex in vertices)
@@ -62,21 +64,19 @@ namespace GK1_lab4
                 vs[Vertex.index].Y = (int)(this.Height * (1 + vn[1]) / 2);
             }
 
-            //refresh
-            this.Invalidate();
+            //Draw
             Graphics.FromImage(bmpFront).Clear(Color.Black);
-            pictureBox1.Image = bmpFront;
-        }
-
-        private void Form1_Paint(object sender, PaintEventArgs e)
-        {
-            //todo to chyba powinnnobyc po prostu w refreshu
-            foreach(var face in model.faces)
+            foreach (var face in model.faces)
             {
                 BresehamLine.Draw(bmpFront, vs[face.indexA], vs[face.indexB], Color.White);
                 BresehamLine.Draw(bmpFront, vs[face.indexB], vs[face.indexC], Color.White);
                 BresehamLine.Draw(bmpFront, vs[face.indexC], vs[face.indexA], Color.White);
+                //draw face filled
+                Point[] ind = { vs[face.indexA], vs[face.indexB], vs[face.indexC] };
+                var a = vs;
+                //Filling.Draw(bmpFront, ind, Color.Yellow);
             }
+            pictureBox1.Image = bmpFront;
         }
 
 
