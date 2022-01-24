@@ -16,12 +16,15 @@ namespace GK1_lab4
 
     public partial class Form1 : Form
     {
+        string modelObjName = "many.obj";
+        string modelObjPath;
+
         //todo hermetyzacja
         Model model;
         Vertex[] vertices;
         Point[] vs;
 
-        private double A = 2.5; //Oddalenie  //todo na przyblizeniu uciekaja wierzcholski i ucieka czesc figury 
+        private double A = 2.5; //Oddalenie  //todo na przyblizeniu uciekaja wierzcholski i ucieka czesc figury (wali error bmp)
         double alfa = Math.PI / 10;
         double alfaplus = Math.PI / 10;
         int refreshInterval = 100;
@@ -35,9 +38,10 @@ namespace GK1_lab4
         private void Form1_Load(object sender, EventArgs e)
         {
             // Model
-            model = new Model("../../../3dEnvironment/many.obj");
+            modelObjPath = "../../../3dEnvironment/" + modelObjName;
+            model = new Model(modelObjPath);
             vertices = model.vertices.ToArray();
-            vs = new Point[vertices.Length + 1]; //indexed by vertices.index property
+            vs = new Point[vertices.Length + 1]; //indexed by vertices.index propertly (indices start at 1 in .obj files)
 
             // Graphics
             bmpFront = new Bitmap(pictureBox1.Image);
@@ -51,20 +55,19 @@ namespace GK1_lab4
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-
-
             alfa += alfaplus;
             Matrix<double> M = P(this.Size.Width, this.Size.Height) * T(0, 0, 4 * A) * R(alfa);
-            foreach(var Vertex in vertices)
+            //foreach(var v in vertices)
+            Parallel.ForEach(vertices, v =>
             {
-                double[] Ai = { Vertex.x, Vertex.y, Vertex.z, Vertex.w };
+                double[] Ai = { v.x, v.y, v.z, v.w };
                 Vector<double> vc = M * DenseVector.OfArray(Ai);
                 Vector<double> vn = vc / vc[3];
-                vs[Vertex.index].X = (int)(this.Width * (1 + vn[0]) / 2);
-                vs[Vertex.index].Y = (int)(this.Height * (1 + vn[1]) / 2);
-            }
+                vs[v.index].X = (int)(this.Width * (1 + vn[0]) / 2);
+                vs[v.index].Y = (int)(this.Height * (1 + vn[1]) / 2);
+            });
 
-            //Draw
+            //Drawing
             Graphics.FromImage(bmpFront).Clear(Color.Black);
             foreach (var face in model.faces)
             {
