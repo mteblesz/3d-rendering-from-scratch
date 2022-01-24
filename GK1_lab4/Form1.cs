@@ -24,7 +24,7 @@ namespace GK1_lab4
         private double A = 2.5; //Oddalenie  //todo na przyblizeniu uciekaja wierzcholski i ucieka czesc figury 
         double alfa = Math.PI / 10;
         double alfaplus = Math.PI / 10;
-        int refreshInterval = 100;
+        int refreshInterval = 1000;
 
         Bitmap bmpFront;
         public Form1()
@@ -68,18 +68,20 @@ namespace GK1_lab4
             Graphics.FromImage(bmpFront).Clear(Color.Black);
             foreach (var face in model.faces)
             {
+                //draw face filled
+                Point[] ind = { vs[face.indexA], vs[face.indexB], vs[face.indexC] };
+                Random rand = new Random();
+                Color randColor = Color.FromArgb(rand.Next(256), rand.Next(256), rand.Next(256));
+                Filling.Draw(bmpFront, ind, randColor);
+                //edges
                 BresehamLine.Draw(bmpFront, vs[face.indexA], vs[face.indexB], Color.White);
                 BresehamLine.Draw(bmpFront, vs[face.indexB], vs[face.indexC], Color.White);
                 BresehamLine.Draw(bmpFront, vs[face.indexC], vs[face.indexA], Color.White);
-                //draw face filled
-                Point[] ind = { vs[face.indexA], vs[face.indexB], vs[face.indexC] };
-                var a = vs;
-                //Filling.Draw(bmpFront, ind, Color.Yellow);
             }
             pictureBox1.Image = bmpFront;
         }
 
-
+        
 
 
         //------------------------------------------------------------------------
