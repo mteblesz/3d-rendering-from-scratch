@@ -62,8 +62,8 @@ namespace GK1_lab4
             }
 
             //refresh
-            this.Invalidate();
-            Graphics.FromImage(bmpFront).Clear(Color.White);
+            //this.Invalidate();
+            Graphics.FromImage(bmpFront).Clear(Color.Black);
             pictureBox1.Image = bmpFront;
         }
 
@@ -74,7 +74,7 @@ namespace GK1_lab4
                 int v_i = face.vertexIndices.First();
                 foreach(int u_i in face.vertexIndices)
                 {
-                    BresehamLine.drawLine(bmpFront, vs[v_i], vs[u_i]);
+                    BresehamLine.Draw(bmpFront, vs[v_i], vs[u_i], Color.White);
                     v_i = u_i;
                 }
 

@@ -10,13 +10,9 @@ namespace GK1_lab4
     //todo zrobic wirtualne pole bitmapowe i z tego wycinac bitmape zeby jak punkt pojdzie poza nia to zeby rysowało
     internal class BresehamLine
     {
-        public static void drawLine(Bitmap bmp, Point start, Point end)
-            => drawColoredLine(bmp, start, end, Color.Black);
-        public static void eraseLine(Bitmap bmp, Point start, Point end)
-            => drawColoredLine(bmp, start, end, Color.White);
-        public static void eraseLine(Bitmap bmp, Point start, Point end, Color color)
-            => drawColoredLine(bmp, start, end, color);
-        public static void drawColoredLine(Bitmap bmp, Point start, Point end, Color color)
+        public static void Draw(Bitmap bmp, Point start, Point end)
+            => Draw(bmp, start, end, Color.Black);
+        public static void Draw(Bitmap bmp, Point start, Point end, Color color)
         {
             if (start.X >= bmp.Width || start.Y >= bmp.Height) return;
             if (end.X >= bmp.Width || end.Y >= bmp.Height) return;
@@ -33,33 +29,33 @@ namespace GK1_lab4
             if (x1 <= x2 && y1 <= y2)
             {
                 if (x2 - x1 > y2 - y1)
-                    drawLineES(bmp, x1, y1, x2, y2, color);
+                    DrawES(bmp, x1, y1, x2, y2, color);
                 else
-                    drawLineSE(bmp, x1, y1, x2, y2, color);
+                    DrawSE(bmp, x1, y1, x2, y2, color);
             }
             else if (x1 > x2 && y1 <= y2)
             {
                 if (x1 - x2 > y2 - y1)
-                    drawLineWS(bmp, x1, y1, x2, y2, color);
+                    DrawWS(bmp, x1, y1, x2, y2, color);
                 else
-                    drawLineSW(bmp, x1, y1, x2, y2, color);
+                    DrawSW(bmp, x1, y1, x2, y2, color);
             }
             else if (x1 > x2 && y1 > y2)
             {
                 if (x1 - x2 > y1 - y2)
-                    drawLineWN(bmp, x1, y1, x2, y2, color);
+                    DrawWN(bmp, x1, y1, x2, y2, color);
                 else
-                    drawLineNW(bmp, x1, y1, x2, y2, color);
+                    DrawNW(bmp, x1, y1, x2, y2, color);
             }
             else
             {
                 if (x2 - x1 > y1 - y2)
-                    drawLineEN(bmp, x1, y1, x2, y2, color);
+                    DrawEN(bmp, x1, y1, x2, y2, color);
                 else
-                    drawLineNE(bmp, x1, y1, x2, y2, color);
+                    DrawNE(bmp, x1, y1, x2, y2, color);
             }
         }
-        private static void drawLineES(Bitmap bmp, int x1, int y1, int x2, int y2, Color color)
+        private static void DrawES(Bitmap bmp, int x1, int y1, int x2, int y2, Color color)
         {
             bmp.SetPixel(0, 0, Color.Red);
 
@@ -89,7 +85,7 @@ namespace GK1_lab4
             }
 
         }
-        private static void drawLineSE(Bitmap bmp, int x1, int y1, int x2, int y2, Color color)
+        private static void DrawSE(Bitmap bmp, int x1, int y1, int x2, int y2, Color color)
         {
             bmp.SetPixel(0, 0, Color.OrangeRed);
 
@@ -119,7 +115,7 @@ namespace GK1_lab4
             }
 
         }
-        private static void drawLineSW(Bitmap bmp, int x1, int y1, int x2, int y2, Color color)
+        private static void DrawSW(Bitmap bmp, int x1, int y1, int x2, int y2, Color color)
         {
             bmp.SetPixel(0, 0, Color.Orange);
 
@@ -149,7 +145,7 @@ namespace GK1_lab4
             }
 
         }
-        private static void drawLineWS(Bitmap bmp, int x1, int y1, int x2, int y2, Color color)
+        private static void DrawWS(Bitmap bmp, int x1, int y1, int x2, int y2, Color color)
         {
             bmp.SetPixel(0, 0, Color.Yellow);
 
@@ -179,7 +175,7 @@ namespace GK1_lab4
             }
 
         }
-        private static void drawLineWN(Bitmap bmp, int x1, int y1, int x2, int y2, Color color)
+        private static void DrawWN(Bitmap bmp, int x1, int y1, int x2, int y2, Color color)
         {
             bmp.SetPixel(0, 0, Color.GreenYellow);
 
@@ -209,7 +205,7 @@ namespace GK1_lab4
             }
 
         }
-        private static void drawLineNW(Bitmap bmp, int x1, int y1, int x2, int y2, Color color)
+        private static void DrawNW(Bitmap bmp, int x1, int y1, int x2, int y2, Color color)
         {
             bmp.SetPixel(0, 0, Color.Green);
 
@@ -239,7 +235,7 @@ namespace GK1_lab4
             }
 
         }
-        private static void drawLineNE(Bitmap bmp, int x1, int y1, int x2, int y2, Color color)
+        private static void DrawNE(Bitmap bmp, int x1, int y1, int x2, int y2, Color color)
         {
             bmp.SetPixel(0, 0, Color.Blue);
 
@@ -269,7 +265,7 @@ namespace GK1_lab4
             }
 
         }
-        private static void drawLineEN(Bitmap bmp, int x1, int y1, int x2, int y2, Color color)
+        private static void DrawEN(Bitmap bmp, int x1, int y1, int x2, int y2, Color color)
         {
             bmp.SetPixel(0, 0, Color.Purple);
 
