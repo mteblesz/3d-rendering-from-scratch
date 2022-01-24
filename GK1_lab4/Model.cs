@@ -62,15 +62,7 @@ namespace GK1_lab4
                     faces.Add((++fCount, face));
                 }
             }
-            foreach (var v in vertices)
-                System.Console.WriteLine(v);
-            foreach (var f in faces)
-            {
-                System.Console.Write("f" + f.index + " "); 
-                foreach (var i in f.vertexIndices)
-                    System.Console.Write(i + " ");
-                Console.WriteLine();
-            }
+            
         }
     }
 }
