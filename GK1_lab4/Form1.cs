@@ -21,7 +21,7 @@ namespace GK1_lab4
         Vertex[] vertices;
         Point[] vs;
 
-        private double A = 2; //Oddalenie
+        private double A = 2.5; //Oddalenie  //todo na przyblizeniu uciekaja wierzcholski i ucieka czesc figury 
         double alfa = Math.PI / 10;
         double alfaplus = Math.PI / 10;
         int refreshInterval = 100;
