@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace GK1_lab4.ModelNS
 {
@@ -14,6 +16,8 @@ namespace GK1_lab4.ModelNS
         public int indexB { get; set; }
         public int indexC { get; set; }
         public Color color { get; set; }
+
+        public Vector<double> normal { get; set; }
 
         public Face(int index, int indexA, int indexB, int indexC)
         {
@@ -31,5 +35,7 @@ namespace GK1_lab4.ModelNS
             this.indexC = indexC;
             this.color = color;
         }
+
+
     }
 }

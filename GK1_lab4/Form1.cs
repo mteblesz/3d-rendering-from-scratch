@@ -16,7 +16,7 @@ namespace GK1_lab4
 
     public partial class Form1 : Form
     {
-        string modelObjName = "many.obj";
+        string modelObjName = "manytorus.obj";
         string modelObjPath;
 
         //todo hermetyzacja
@@ -24,7 +24,7 @@ namespace GK1_lab4
         Vertex[] vertices;
         Point[] vs;
 
-        private double A = 2.5; //Oddalenie  //todo na przyblizeniu uciekaja wierzcholski i ucieka czesc figury (wali error bmp)
+        private double A = 3; //Oddalenie  //todo na przyblizeniu uciekaja wierzcholski i ucieka czesc figury (wali error bmp)
         double alfa = Math.PI / 10;
         double alfaplus = Math.PI / 100;
         int refreshInterval = 16;
@@ -57,7 +57,6 @@ namespace GK1_lab4
         {
             alfa += alfaplus;
             Matrix<double> M = P(this.Size.Width, this.Size.Height) * T(0, 0, 4 * A) * R(alfa);
-            //foreach(var v in vertices)
             Parallel.ForEach(vertices, v =>
             {
                 double[] Ai = { v.x, v.y, v.z, v.w };
@@ -65,6 +64,13 @@ namespace GK1_lab4
                 Vector<double> vn = vc / vc[3];
                 vs[v.index].X = (int)(this.Width * (1 + vn[0]) / 2);
                 vs[v.index].Y = (int)(this.Height * (1 + vn[1]) / 2);
+
+            });
+
+            //Light
+            Parallel.ForEach(model.faces, face =>
+            {
+                
             });
 
             //Drawing
@@ -75,9 +81,9 @@ namespace GK1_lab4
                 Point[] ind = { vs[face.indexA], vs[face.indexB], vs[face.indexC] };
                 Filling.Draw(bmpFront, ind, face.color);
                 //edges
-                BresehamLine.Draw(bmpFront, ind[0], ind[1], Color.White);
-                BresehamLine.Draw(bmpFront, ind[1], ind[2], Color.White);
-                BresehamLine.Draw(bmpFront, ind[2], ind[0], Color.White);
+                //BresehamLine.Draw(bmpFront, ind[0], ind[1], Color.White);
+                //BresehamLine.Draw(bmpFront, ind[1], ind[2], Color.White);
+                //BresehamLine.Draw(bmpFront, ind[2], ind[0], Color.White);
             }
             pictureBox1.Image = bmpFront;
         }
