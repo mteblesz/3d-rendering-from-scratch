@@ -29,7 +29,7 @@ namespace GK1_lab4
                     b = v;
                 }
                 currx = a.X;
-                dx = Math.Abs((double)(b.X - a.X) / (b.Y - a.Y)); //TODO pewnie lepiej by bylo bresenhamowac ://
+                dx = (double)(b.X - a.X) / (b.Y - a.Y); //TODO pewnie lepiej by bylo bresenhamowac ://
             }
             public int getNextX()
             {
@@ -49,11 +49,13 @@ namespace GK1_lab4
 
             //    return Color.FromArgb(R, G, B);
             //}
+            public bool Equals(Border b)
+            {
+                return b.a == this.a && b.b == this.b;
+            }
         }
-        public static void Draw(Bitmap bmp, Point[] ind, Color fillingColor) //proper filling algorithm
+        public static void Draw(Bitmap bmp, Point[] ind, Color fillingColor)
         {
-            
-            Color color = fillingColor;
             ind = PointYvalInsertionSort(ind);
             int ymin = ind[0].Y;
             int ymax = ind[2].Y;
@@ -61,7 +63,7 @@ namespace GK1_lab4
 
             for (int y = ymin + 1; y <= ymax; y++)
             {
-                for(int i = 0;i<3; i++) //for each point in triangle
+                for (int i = 0; i < 3; i++) //for each point in triangle
                 {
                     Point v = ind[i];
                     if (v.Y == y - 1)
@@ -71,32 +73,24 @@ namespace GK1_lab4
                         if (prevv.Y > v.Y)
                             aet.Add(bPrev);
                         else if (prevv.Y < v.Y)
-                            aet.Remove(aet.Find((Border e) => { return e == bPrev; }));//.a == prevv && e.b == v; }));
+                            aet.Remove(aet.Find((Border b) => b.Equals(bPrev)));
 
                         Point nextv = ind[(i + 1) % 3];
                         Border bNext = new Border(v, nextv);
                         if (nextv.Y > v.Y)
                             aet.Add(bNext);
                         else if (nextv.Y < v.Y)
-                            aet.Remove(aet.Find((Border e) => { return e == bNext; }));
+                            aet.Remove(aet.Find((Border b) => b.Equals(bNext)));
                     }
                 }
                 aet.Sort((Border b1, Border b2) => { return b1.getCurrX().CompareTo(b2.getCurrX()); });
 
 
-                bool isInside = true;
-                var eeee = aet;
                 int x1 = aet[0].getNextX();
+                int x2 = aet[1].getNextX();
+                for (int x = x1; x <= x2; x++)
+                    bmp.SetPixel(x, y, fillingColor);
 
-                for (int i = 1; i < aet.Count; i++)
-                {
-                    int x2 = aet[i].getNextX();
-                    if (isInside)
-                        for (int x = x1; x <= x2 && x<bmp.Width; x++)
-                            bmp.SetPixel(x, y, color);
-                    isInside = !isInside;
-                    x1 = x2;
-                }
 
             }
         }

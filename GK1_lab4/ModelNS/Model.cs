@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace GK1_lab4.ModelNS
         public List<Face> faces = new List<Face>();
         public Model(string fileName)
         {
+            Random rand = new Random();
+
             int vCount = 0;
             int fCount = 0;
             //FileStream file = File.Open(fileName, FileMode.Open);
@@ -39,7 +42,8 @@ namespace GK1_lab4.ModelNS
                         string[] slashParts = parts[i+1].Split('/'); //ignore parts[0] := "f"
                         indexabc[i] = int.Parse(slashParts[0], CultureInfo.InvariantCulture);
                     }
-                    faces.Add(new Face(++fCount, indexabc[0], indexabc[1], indexabc[2]));
+                    faces.Add(new Face(++fCount, indexabc[0], indexabc[1], indexabc[2],
+                                        Color.FromArgb(rand.Next(256), rand.Next(256), rand.Next(256))));
                 }
 
             }
