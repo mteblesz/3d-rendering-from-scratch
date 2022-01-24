@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
+using GK1_lab4.ModelNS;
 
 namespace GK1_lab4
 {
@@ -17,7 +18,7 @@ namespace GK1_lab4
     {
         //todo hermetyzacja
         Model model;
-        vertex[] vertices;
+        Vertex[] vertices;
         Point[] vs;
 
         private double A = 2; //Oddalenie
@@ -34,7 +35,7 @@ namespace GK1_lab4
         private void Form1_Load(object sender, EventArgs e)
         {
             // Model
-            model = new Model("../../../models/many.obj");
+            model = new Model("../../../3dEnvironment/many.obj");
             vertices = model.vertices.ToArray();
             vs = new Point[vertices.Length + 1]; //indexed by vertices.index property
 
@@ -52,17 +53,17 @@ namespace GK1_lab4
         {
             alfa += alfaplus;
             Matrix<double> M = P(this.Size.Width, this.Size.Height) * T(0, 0, 4 * A) * R(alfa);
-            foreach(var vertex in vertices)
+            foreach(var Vertex in vertices)
             {
-                double[] Ai = { vertex.x, vertex.y, vertex.z, vertex.w };
+                double[] Ai = { Vertex.x, Vertex.y, Vertex.z, Vertex.w };
                 Vector<double> vc = M * DenseVector.OfArray(Ai);
                 Vector<double> vn = vc / vc[3];
-                vs[vertex.index].X = (int)(this.Width * (1 + vn[0]) / 2);
-                vs[vertex.index].Y = (int)(this.Height * (1 + vn[1]) / 2);
+                vs[Vertex.index].X = (int)(this.Width * (1 + vn[0]) / 2);
+                vs[Vertex.index].Y = (int)(this.Height * (1 + vn[1]) / 2);
             }
 
             //refresh
-            //this.Invalidate();
+            this.Invalidate();
             Graphics.FromImage(bmpFront).Clear(Color.Black);
             pictureBox1.Image = bmpFront;
         }
@@ -71,8 +72,8 @@ namespace GK1_lab4
         {
             foreach(var face in model.faces)
             {
-                int v_i = face.vertexIndices.First();
-                foreach(int u_i in face.vertexIndices)
+                int v_i = face.VertexIndices.First();
+                foreach(int u_i in face.VertexIndices)
                 {
                     BresehamLine.Draw(bmpFront, vs[v_i], vs[u_i], Color.White);
                     v_i = u_i;
