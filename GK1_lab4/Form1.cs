@@ -77,7 +77,7 @@ namespace GK1_lab4
             //Light
             Parallel.ForEach(model.faces, face =>
             {
-                Vector<double> lD = lightDirVector * R(-2*alfa);
+                Vector<double> lD = lightDirVector;// * R(alfa);
                 double intensity = lD[0] * face.normal[0] + lD[1] * face.normal[1] + lD[2] * face.normal[2]; //dot product lD * normal
                 //intensity = Math.Max(intensity, 1);
                 if (intensity >= 0)
@@ -88,16 +88,26 @@ namespace GK1_lab4
 
             //Drawing
             Graphics.FromImage(bmpFront).Clear(Color.Black);
+            if(false)
             foreach (var face in model.faces)
             {
-                if (face.color == Color.Transparent) continue;
-                //draw face filled
-                Point[] ind = { vs[face.indexA], vs[face.indexB], vs[face.indexC] };
-                Filling.Draw(bmpFront, ind, face.color);
-                //edges
-                //BresehamLine.Draw(bmpFront, ind[0], ind[1], Color.Orange);
-                //BresehamLine.Draw(bmpFront, ind[1], ind[2], Color.Orange);
-                //BresehamLine.Draw(bmpFront, ind[2], ind[0], Color.Orange);
+                if (face.color == Color.Transparent)
+                {
+                    Point[] ind = { vs[face.indexA], vs[face.indexB], vs[face.indexC] };
+                    //edges only
+                    BresehamLine.Draw(bmpFront, ind[0], ind[1], Color.Orange);
+                    BresehamLine.Draw(bmpFront, ind[1], ind[2], Color.Orange);
+                    BresehamLine.Draw(bmpFront, ind[2], ind[0], Color.Orange);
+                }
+            }
+            foreach (var face in model.faces)
+            {
+                if (face.color != Color.Transparent)
+                {
+                    Point[] ind = { vs[face.indexA], vs[face.indexB], vs[face.indexC] };
+                    //draw face filled
+                    Filling.Draw(bmpFront, ind, face.color);
+                }
             }
             pictureBox1.Image = bmpFront;
         }

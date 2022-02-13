@@ -89,7 +89,13 @@ namespace GK1_lab4
                 int x1 = aet[0].getNextX();
                 int x2 = aet[1].getNextX();
                 for (int x = x1; x <= x2; x++)
-                    bmp.SetPixel(x, y, fillingColor);
+                {
+                    try
+                    {
+                        bmp.SetPixel(x, y, fillingColor);
+                    }
+                    catch { }
+                }
 
 
             }

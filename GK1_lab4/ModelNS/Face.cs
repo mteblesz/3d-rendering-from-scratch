@@ -17,7 +17,7 @@ namespace GK1_lab4.ModelNS
         public int indexC { get; set; }
         public Color color { get; set; }
 
-        public Vector<double> normal { get; set; }
+        public Vector<double>? normal { get; set; }
 
         public Face(int index, int indexA, int indexB, int indexC)
         {
