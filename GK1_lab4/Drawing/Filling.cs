@@ -12,11 +12,11 @@ namespace GK1_lab4
         #region Border class
         protected class Border
         {
-            public Point a; //higher
-            public Point b; //lower
+            public readonly OSVertex a; //higher
+            public readonly OSVertex b; //lower
             private double currx;
             private double dx;
-            public Border(Point v, Point w)
+            public Border(OSVertex v, OSVertex w)
             {
                 if (v.Y <= w.Y)
                 {
@@ -55,28 +55,28 @@ namespace GK1_lab4
             }
         }
         #endregion
-        public static void Draw(Bitmap bmp, Point[] ind, Color fillingColor)
+        public static void Draw(Bitmap bmp, OSVertex[] abc, Color fillingColor) //abc - vertices of a tringle to fill
         {
-            ind = PointYvalInsertionSort(ind);
-            int ymin = ind[0].Y;
-            int ymax = ind[2].Y;
+            abc = PointYvalInsertionSort(abc);
+            int ymin = abc[0].Y;
+            int ymax = abc[2].Y;
             List<Border> aet = new List<Border>(); //here edge has point of lower y as v1
 
             for (int y = ymin + 1; y <= ymax; y++)
             {
                 for (int i = 0; i < 3; i++) //for each point in triangle
                 {
-                    Point v = ind[i];
+                    OSVertex v = abc[i];
                     if (v.Y == y - 1)
                     {
-                        Point prevv = ind[(i + 2) % 3];
+                        OSVertex prevv = abc[(i + 2) % 3];
                         Border bPrev = new Border(v, prevv);
                         if (prevv.Y > v.Y)
                             aet.Add(bPrev);
                         else if (prevv.Y < v.Y)
                             aet.Remove(aet.Find((Border b) => b.Equals(bPrev)));
 
-                        Point nextv = ind[(i + 1) % 3];
+                        OSVertex nextv = abc[(i + 1) % 3];
                         Border bNext = new Border(v, nextv);
                         if (nextv.Y > v.Y)
                             aet.Add(bNext);
@@ -92,13 +92,20 @@ namespace GK1_lab4
                 for (int x = x1; x <= x2; x++)
                 {
                     //Z-buffor todo
+                    //to barycentric
+
+                    //extract z
+
+                    //check z buffor condition
+
+                    //draw
                     bmp.SetPixel(x, y, fillingColor);
                 }
 
 
             }
         }
-        private static Point[] PointYvalInsertionSort(Point[] inputArray) //todo change to only sort 3 numbers
+        private static OSVertex[] PointYvalInsertionSort(OSVertex[] inputArray) //todo change to only sort 3 numbers
         {
             for (int i = 0; i < inputArray.Length - 1; i++)
             {
@@ -106,7 +113,7 @@ namespace GK1_lab4
                 {
                     if (inputArray[j - 1].Y > inputArray[j].Y)
                     {
-                        Point temp = inputArray[j - 1];
+                        OSVertex temp = inputArray[j - 1];
                         inputArray[j - 1] = inputArray[j];
                         inputArray[j] = temp;
                     }

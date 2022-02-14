@@ -56,7 +56,7 @@ namespace GK1_lab4
 
         }
 
-        public Model(Model m) //todo
+        public Model(Model m) //todo for making a scene maybe
         {
             throw new NotImplementedException();
         }

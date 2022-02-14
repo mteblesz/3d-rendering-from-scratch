@@ -21,7 +21,7 @@ namespace GK1_lab4
         //todo hermetyzacja
         Model model;
         Vertex[] vertices;
-        Point[] vs;
+        OSVertex[] oSVertices; //screen vertices (x, y coords, while z is used in z-buffer)
 
         private double A = 3; //Oddalenie  //todo na przyblizeniu uciekaja wierzcholski i ucieka czesc figury (wali error bmp)
         double alfa = Math.PI / 10;
@@ -43,7 +43,7 @@ namespace GK1_lab4
             modelObjPath = "../../../3dEnvironment/" + modelObjName;
             model = new Model(modelObjPath);
             vertices = model.vertices.ToArray();
-            vs = new Point[vertices.Length + 1]; //indexed by vertices.index propertly (indices start at 1 in .obj files)
+            oSVertices = new OSVertex[vertices.Length + 1]; //indexed by vertices.index propertly (indices start at 1 in .obj files)
 
             //light
             lightDirVector = DenseVector.OfArray(lightDir).Normalize(1);
@@ -65,11 +65,12 @@ namespace GK1_lab4
             Matrix<double> M = P(this.Size.Width, this.Size.Height) * T(0, 0, 4 * A) * R(alfa);
             Parallel.ForEach(vertices, v =>
             {
-                double[] Ai = { v.x, v.y, v.z, v.w };
+                double[] Ai = { v.X, v.Y, v.Z, v.W };
                 Vector<double> vc = M * DenseVector.OfArray(Ai);
                 Vector<double> vn = vc / vc[3];
-                vs[v.index].X = (int)(this.Width * (1 + vn[0]) / 2);
-                vs[v.index].Y = (int)(this.Height * (1 + vn[1]) / 2);
+                oSVertices[v.index].X = (int)(this.Width * (1 + vn[0]) / 2);
+                oSVertices[v.index].Y = (int)(this.Height * (1 + vn[1]) / 2);
+                oSVertices[v.index].Z = (this.Height * (1 + vn[1]) / 2); //remains double for zbuffer
 
             });
 
@@ -87,12 +88,14 @@ namespace GK1_lab4
 
             //Drawing
             Graphics.FromImage(bmpFront).Clear(Color.Black);
+
+            ZBuffor zBuffor = new ZBuffor(this.Width, this.Height);
             foreach (var face in model.faces)
             {
                 if (face.color == Color.Transparent) continue;
                 //draw face filled
-                Point[] ind = { vs[face.A.index], vs[face.B.index], vs[face.C.index] };
-                Filling.Draw(bmpFront, ind, face.color);
+                OSVertex[] faceOnScreen = { oSVertices[face.A.index], oSVertices[face.B.index], oSVertices[face.C.index] };
+                Filling.Draw(bmpFront, faceOnScreen, face.color);
                 //edges
                 //BresehamLine.Draw(bmpFront, ind[0], ind[1], Color.Orange);
                 //BresehamLine.Draw(bmpFront, ind[1], ind[2], Color.Orange);
