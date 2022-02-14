@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
-using GK1_lab4.ModelNS;
 
 namespace GK1_lab4
 {
@@ -92,7 +91,7 @@ namespace GK1_lab4
             {
                 if (face.color == Color.Transparent) continue;
                 //draw face filled
-                Point[] ind = { vs[face.indexA], vs[face.indexB], vs[face.indexC] };
+                Point[] ind = { vs[face.A.index], vs[face.B.index], vs[face.C.index] };
                 Filling.Draw(bmpFront, ind, face.color);
                 //edges
                 //BresehamLine.Draw(bmpFront, ind[0], ind[1], Color.Orange);

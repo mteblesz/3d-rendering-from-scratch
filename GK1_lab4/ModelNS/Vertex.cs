@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GK1_lab4.ModelNS
+namespace GK1_lab4
 {
     public class Vertex
     {

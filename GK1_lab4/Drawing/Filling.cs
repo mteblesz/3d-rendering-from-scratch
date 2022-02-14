@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
-using GK1_lab4.ModelNS;
 
 namespace GK1_lab4
 {
     internal static class Filling
     {
+        #region Border class
         protected class Border
         {
             public Point a; //higher
@@ -29,7 +29,7 @@ namespace GK1_lab4
                     b = v;
                 }
                 currx = a.X;
-                dx = (double)(b.X - a.X) / (b.Y - a.Y); //TODO pewnie lepiej by bylo bresenhamowac ://
+                dx = (double)(b.X - a.X) / (b.Y - a.Y); //TODO pewnie lepiej by bylo bresenhamowac(??) ://
             }
             public int getNextX()
             {
@@ -54,6 +54,7 @@ namespace GK1_lab4
                 return b.a == this.a && b.b == this.b;
             }
         }
+        #endregion
         public static void Draw(Bitmap bmp, Point[] ind, Color fillingColor)
         {
             ind = PointYvalInsertionSort(ind);
@@ -89,7 +90,10 @@ namespace GK1_lab4
                 int x1 = aet[0].getNextX();
                 int x2 = aet[1].getNextX();
                 for (int x = x1; x <= x2; x++)
+                {
+                    //Z-buffor todo
                     bmp.SetPixel(x, y, fillingColor);
+                }
 
 
             }
@@ -110,5 +114,8 @@ namespace GK1_lab4
             }
             return inputArray;
         }
+
+
+
     }
 }

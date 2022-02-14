@@ -7,33 +7,27 @@ using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 
-namespace GK1_lab4.ModelNS
+namespace GK1_lab4
 {
     public class Face
     {
         public int index { get; set; }
-        public int indexA { get; set; }
-        public int indexB { get; set; }
-        public int indexC { get; set; }
-        public Color color { get; set; }
-
+        public Vertex A { get; set; }
+        public Vertex B { get; set; }
+        public Vertex C { get; set; }
         public Vector<double> normal { get; set; }
 
-        public Face(int index, int indexA, int indexB, int indexC)
+        public Color color { get; set; }
+
+
+        public Face(int index, Vertex A, Vertex B, Vertex C)
         {
             this.index = index;
-            this.indexA = indexA;
-            this.indexB = indexB;
-            this.indexC = indexC;
+            this.A = A;
+            this.B = B;
+            this.C = C;
+            normal = Utils.normalVectorOfFace(A, B, C);
             this.color = Color.Transparent;
-        }
-        public Face(int index, int indexA, int indexB, int indexC, Color color)
-        {
-            this.index = index;
-            this.indexA = indexA;
-            this.indexB = indexB;
-            this.indexC = indexC;
-            this.color = color;
         }
 
 

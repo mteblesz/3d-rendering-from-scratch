@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 
-namespace GK1_lab4.ModelNS
+namespace GK1_lab4
 {
     public class Model
     {
@@ -44,31 +44,22 @@ namespace GK1_lab4.ModelNS
                         string[] slashParts = parts[i + 1].Split('/'); //ignore parts[0] := "f"
                         indexabc[i] = int.Parse(slashParts[0], CultureInfo.InvariantCulture);
                     }
-                    faces.Add(new Face(++fCount, indexabc[0], indexabc[1], indexabc[2]));
-                                        //Color.FromArgb(rand.Next(256), rand.Next(256), rand.Next(256))));
+
+                    Vertex? a = vertices.Find((Vertex v) => v.index == indexabc[0]);
+                    Vertex? b = vertices.Find((Vertex v) => v.index == indexabc[1]);
+                    Vertex? c = vertices.Find((Vertex v) => v.index == indexabc[2]);
+                    if(a != null && b != null && c != null)
+                        faces.Add(new Face(++fCount, a, b, c));
                 }
 
             }
-            foreach(Face face in faces)
-            {
-                Vertex? a = vertices.Find((Vertex v) => v.index == face.indexA);
-                Vertex? b = vertices.Find((Vertex v) => v.index == face.indexB);
-                Vertex? c = vertices.Find((Vertex v) => v.index == face.indexC);
-                face.normal = normal(a, b, c);
-            }
 
         }
 
-        private Vector<double> normal(Vertex a, Vertex b, Vertex c)
+        public Model(Model m) //todo
         {
-            //https://math.stackexchange.com/questions/305642/how-to-find-surface-normal-of-a-triangle
-
-            double[] N = new double[3];
-            N[0] = (b.y - a.y) * (c.z - a.z) - (c.y - a.y) * (b.z - a.z);
-            N[1] = (b.z - a.z) * (c.x - a.x) - (b.x - a.x) * (c.z - a.z);
-            N[2] = (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
-
-            return DenseVector.OfArray(N).Normalize(1);
+            throw new NotImplementedException();
         }
+
     }
 }
