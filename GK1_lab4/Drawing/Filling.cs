@@ -55,28 +55,28 @@ namespace GK1_lab4
             }
         }
         #endregion
-        public static void Draw(Bitmap bmp, OSVertex[] abc, Color fillingColor) //abc - vertices of a tringle to fill
+        public static void Draw(Bitmap bmp, ZBuffor zBuffor,  OSVertex[] faceVertices, Color fillingColor) 
         {
-            abc = PointYvalInsertionSort(abc);
-            int ymin = abc[0].Y;
-            int ymax = abc[2].Y;
+            faceVertices = PointYvalInsertionSort(faceVertices);
+            int ymin = faceVertices[0].Y;
+            int ymax = faceVertices[2].Y;
             List<Border> aet = new List<Border>(); //here edge has point of lower y as v1
 
             for (int y = ymin + 1; y <= ymax; y++)
             {
-                for (int i = 0; i < 3; i++) //for each point in triangle
+                for (int i = 0; i < 3; i++) //for each point in face
                 {
-                    OSVertex v = abc[i];
+                    OSVertex v = faceVertices[i];
                     if (v.Y == y - 1)
                     {
-                        OSVertex prevv = abc[(i + 2) % 3];
+                        OSVertex prevv = faceVertices[(i + 2) % 3];
                         Border bPrev = new Border(v, prevv);
                         if (prevv.Y > v.Y)
                             aet.Add(bPrev);
                         else if (prevv.Y < v.Y)
                             aet.Remove(aet.Find((Border b) => b.Equals(bPrev)));
 
-                        OSVertex nextv = abc[(i + 1) % 3];
+                        OSVertex nextv = faceVertices[(i + 1) % 3];
                         Border bNext = new Border(v, nextv);
                         if (nextv.Y > v.Y)
                             aet.Add(bNext);
@@ -92,11 +92,10 @@ namespace GK1_lab4
                 for (int x = x1; x <= x2; x++)
                 {
                     //Z-buffor 
-                    double z = Utils.zValue(new OSVertex(x, y), abc[0], abc[1], abc[2]);
-                    //check z buffor condition todo
-
-                    //draw
-                    bmp.SetPixel(x, y, fillingColor);
+                    double z = Utils.zValue(new OSVertex(x, y), faceVertices[0], faceVertices[1], faceVertices[2]);
+                    //check z buffor condition, if true, draw pixel
+                    if (zBuffor.tryValueAt(x, y, z))
+                        bmp.SetPixel(x, y, fillingColor);
                 }
 
 

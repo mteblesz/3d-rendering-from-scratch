@@ -24,10 +24,10 @@ namespace GK1_lab4
         OSVertex[] oSVertices; //screen vertices (x, y coords, while z is used in z-buffer)
 
         private double A = 3; //Oddalenie  //todo na przyblizeniu uciekaja wierzcholski i ucieka czesc figury (wali error bmp)
-        double alfa = Math.PI / 10;
-        double alfaplus = Math.PI / 100;
-        int refreshInterval = 16;
-        double[] lightDir = { 0, 0, -1 , 0};
+        double alfa = 0;
+        double alfaplus = Math.PI / 360;
+        int refreshInterval = 50;
+        double[] lightDir = { 0, 0, 1 , 0};
 
         Vector<double> lightDirVector;
 
@@ -77,13 +77,13 @@ namespace GK1_lab4
             //Light
             Parallel.ForEach(model.faces, face =>
             {
-                Vector<double> lD = lightDirVector * R(-2*alfa);
+                Vector<double> lD = lightDirVector;// * R(-2*alfa);
                 double intensity = lD[0] * face.normal[0] + lD[1] * face.normal[1] + lD[2] * face.normal[2]; //dot product lD * normal
                 //intensity = Math.Max(intensity, 1);
                 if (intensity >= 0)
                     face.color = Color.FromArgb((int)(255 * intensity), (int)(255 * intensity), (int)(255 * intensity));
                 else
-                    face.color = Color.Transparent;
+                    face.color = Color.DarkBlue;
             });
 
             //Drawing
@@ -92,14 +92,14 @@ namespace GK1_lab4
             ZBuffor zBuffor = new ZBuffor(this.Width, this.Height);
             foreach (var face in model.faces)
             {
-                if (face.color == Color.Transparent) continue;
+                if (face.color == Color.DarkBlue) continue;
                 //draw face filled
                 OSVertex[] faceOnScreen = { oSVertices[face.A.index], oSVertices[face.B.index], oSVertices[face.C.index] };
-                Filling.Draw(bmpFront, faceOnScreen, face.color);
+                Filling.Draw(bmpFront, zBuffor, faceOnScreen, face.color);
                 //edges
-                //BresehamLine.Draw(bmpFront, ind[0], ind[1], Color.Orange);
-                //BresehamLine.Draw(bmpFront, ind[1], ind[2], Color.Orange);
-                //BresehamLine.Draw(bmpFront, ind[2], ind[0], Color.Orange);
+                //BresehamLine.Draw(bmpFront, faceOnScreen[0].toPoint(), faceOnScreen[1].toPoint(), Color.Orange);
+                //BresehamLine.Draw(bmpFront, faceOnScreen[1].toPoint(), faceOnScreen[2].toPoint(), Color.Orange);
+                //BresehamLine.Draw(bmpFront, faceOnScreen[2].toPoint(), faceOnScreen[0].toPoint(), Color.Orange);
             }
             pictureBox1.Image = bmpFront;
         }

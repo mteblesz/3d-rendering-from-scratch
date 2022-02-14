@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,6 +43,8 @@ namespace GK1_lab4
             Y = y;
             Z = z;
         }
+        public Point toPoint()
+            => new Point(X, Y);
         public static bool operator ==(OSVertex v, OSVertex w)
         {
             return w.X == v.X && w.Y == v.Y && w.Z == v.Z;
