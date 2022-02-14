@@ -36,7 +36,12 @@ namespace GK1_lab4
         public double Z { get; set; }
 
 
-
+        public OSVertex(int x, int y, int z = 0)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+        }
         public static bool operator ==(OSVertex v, OSVertex w)
         {
             return w.X == v.X && w.Y == v.Y && w.Z == v.Z;

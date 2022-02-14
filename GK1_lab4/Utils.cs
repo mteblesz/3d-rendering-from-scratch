@@ -28,8 +28,9 @@ namespace GK1_lab4
             double[] dv = { osv.X, osv.Y };
             return DenseVector.OfArray(dv);
         }
-        public static Vector<double> toBarycentric(OSVertex P, OSVertex A, OSVertex B, OSVertex C)
+        public static double zValue(OSVertex P, OSVertex A, OSVertex B, OSVertex C) 
         {
+            //get barycentric coordinates of P
             Vector<double> a = get2DVector(A);
             Vector<double> b = get2DVector(B);
             Vector<double> c = get2DVector(C);
@@ -47,16 +48,10 @@ namespace GK1_lab4
 
             double v = (d11 * d20 - d01 * d21) * invDenom;
             double w = (d00 * d21 - d01 * d20) * invDenom;
-            double u = 1.0f - v - w;
+            double u = 1.0 - v - w;
 
-            double[] result = { v, w, u };
-            return DenseVector.OfArray(result);
+            //calculate z value
+            return v * A.Z + w * B.Z + u * C.Z;
         }
-        public static double zFromBarycentric(Vector<double> bcP, Vertex A, Vertex B, Vertex C)
-        {
-            //if (bcP.Count() != 3) throw new ArgumentException();
-            return bcP[0] * A.Z + bcP[1] * B.Z + bcP[2] * C.Z;
-        }
-
     }
 }

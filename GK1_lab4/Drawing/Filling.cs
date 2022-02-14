@@ -91,12 +91,9 @@ namespace GK1_lab4
                 int x2 = aet[1].getNextX();
                 for (int x = x1; x <= x2; x++)
                 {
-                    //Z-buffor todo
-                    //to barycentric
-
-                    //extract z
-
-                    //check z buffor condition
+                    //Z-buffor 
+                    double z = Utils.zValue(new OSVertex(x, y), abc[0], abc[1], abc[2]);
+                    //check z buffor condition todo
 
                     //draw
                     bmp.SetPixel(x, y, fillingColor);
