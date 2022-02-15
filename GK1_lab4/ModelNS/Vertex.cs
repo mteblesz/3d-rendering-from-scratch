@@ -24,7 +24,7 @@ namespace GK1_lab4
         public double Y { get; set; }
         public double Z { get; set; }
         public double W { get; set; }
-        public Vertex(int index, double X, double Y, double Z, double W)
+        public Vertex(int index, double X, double Y, double Z, double W = 1)
         {
             this.index = index;
             this.x = this.X = X;
@@ -32,6 +32,11 @@ namespace GK1_lab4
             this.z = this.Z = Z;
             this.w = this.W = W;
         }
+        //public Vector<double> to3DVector()
+        //{
+        //    double[] array = { X, Y, Z};
+        //    return DenseVector.OfArray(array);
+        //}
         public Vector<double> to4DVector()
         {
             double[] array = { X, Y, Z, W };

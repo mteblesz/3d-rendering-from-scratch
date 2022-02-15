@@ -24,7 +24,7 @@ namespace GK1_lab4
         {
             for (int i = 0; i < Width; i++)
                 for (int j = 0; j < Heigth; j++)
-                    Values[i, j] = double.PositiveInfinity;
+                    Values[i, j] = double.PositiveInfinity; //NegativeInfinity //PositiveInfinity
         }
 
         public bool tryValueAt(int x, int y, double value) 
