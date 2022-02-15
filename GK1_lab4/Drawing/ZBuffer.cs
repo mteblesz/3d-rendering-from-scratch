@@ -18,9 +18,13 @@ namespace GK1_lab4
             Heigth = heigth;
             Values = new double[Width, Heigth];
 
-            for(int i = 0; i < Width; i++)
-                for(int j = 0; j < Heigth; j++)
-                    Values[i, j] = double.NegativeInfinity; //Anything would be closer than that
+            Reset();
+        }
+        public void Reset()
+        {
+            for (int i = 0; i < Width; i++)
+                for (int j = 0; j < Heigth; j++)
+                    Values[i, j] = double.PositiveInfinity;
         }
 
         public bool tryValueAt(int x, int y, double value) 
@@ -28,7 +32,7 @@ namespace GK1_lab4
             if (x < 0 || y < 0 || x >= Width || y >= Heigth)
                 return false;
 
-            if (Values[x, y] < value)
+            if (Values[x, y] > value)
             {
                 Values[x, y] = value;
                 return true;
@@ -36,12 +40,7 @@ namespace GK1_lab4
             return false;
 
         }
-        public void Reset()
-        {
-            for (int i = 0; i < Width; i++)
-                for (int j = 0; j < Heigth; j++)
-                    Values[i, j] = double.NegativeInfinity; //Anything would be closer than that
-        }
+       
 
     }
 }

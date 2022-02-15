@@ -55,6 +55,8 @@ namespace GK1_lab4
             }
         }
         #endregion
+
+
         public static void Draw(Bitmap bmp, ZBuffer zBuffor,  OSVertex[] dfaceVertices, Color fillingColor) 
         {
             Point[] faceVertices = {dfaceVertices[0].toPoint(),
