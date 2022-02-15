@@ -83,7 +83,7 @@ namespace GK1_lab4
                 if (intensity >= 0)
                     face.color = Color.FromArgb((int)(255 * intensity), (int)(255 * intensity), (int)(255 * intensity));
                 else
-                    face.color = Color.Transparent;
+                    face.color = Color.Black;
             });
 
             //Drawing
@@ -102,12 +102,12 @@ namespace GK1_lab4
             }
             foreach (var face in model.faces)
             {
-                if (face.color != Color.Transparent)
-                {
+                //if (face.color == Color.Black) continue
+                
                     Point[] ind = { vs[face.indexA], vs[face.indexB], vs[face.indexC] };
                     //draw face filled
                     Filling.Draw(bmpFront, ind, face.color);
-                }
+                
             }
             pictureBox1.Image = bmpFront;
         }
