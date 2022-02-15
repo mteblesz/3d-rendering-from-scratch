@@ -24,12 +24,12 @@ namespace GK1_lab4
         double alfa = 0;
         double alfaplus = Math.PI / 100;
         int refreshInterval = 33;
-        double[] lightDir = { -1, 0, -1, 0 };
+        double[] lightDir = { -3, 0, -0.5, 0 };
 
 
         int cameraType = 0; //0 - still,  1- tracing, 2- following
         Camera camera1;
-        double[] camera1Position = { 6, 0, -12 };
+        double[] camera1Position = { 6, 0, -20 };
         double[] camera1Target = { 0, 0, 0 };
         Camera camera2;
         double[] camera2Position = {-15, 7, 15 };
@@ -60,7 +60,7 @@ namespace GK1_lab4
             camera2 = new Camera(DenseVector.OfArray(camera2Position), DenseVector.OfArray(camera2Target));
 
             // light
-            lightDirVector = DenseVector.OfArray(lightDir).Normalize(1);
+            lightDirVector = DenseVector.OfArray(lightDir);
 
             // Graphics
             bmpFront = new Bitmap(pictureBox1.Image);
