@@ -17,27 +17,23 @@ namespace GK1_lab4
     {
         string modelObjName1 = "manytorus.obj";
         string modelObjName2 = "cube.obj";
+        Model[] models;
 
-        //starting conditions
-        private double A = 3; //Oddalenie  
+
+        //starting conditions 
         double alfa = 0;
         double alfaplus = Math.PI / 100;
         int refreshInterval = 33;
-        double[] lightDir = { -1, 0, -1, 0};
+        double[] lightDir = { -1, 0, -1, 0 };
 
 
         int cameraType = 0; //0 - still,  1- tracing, 2- following
         Camera camera1;
-        double[] camera1Position = { 0, 0, 12 };
+        double[] camera1Position = { 6, 0, -12 };
         double[] camera1Target = { 0, 0, 0 };
         Camera camera2;
-        double[] camera2Position = { 0, 5, 12 };
-        double[] camera2Target = { -2, 0, 0 };
+        double[] camera2Position = {-15, 7, 15 };
 
-        Model model1;
-        Model model2;
-        Vertex[] vertices;
-        OSVertex[] oSVertices; //screen vertices (x, y coords, while z is used in z-buffer)
 
         Vector<double> lightDirVector;
         Bitmap bmpFront;
@@ -54,15 +50,16 @@ namespace GK1_lab4
             this.Height = pictureBox1.Height;
             this.Width = pictureBox1.Width;
             // Model
-            model1 = new Model("../../../3dEnvironment/" + modelObjName1);
-            model2 = new Model("../../../3dEnvironment/" + modelObjName2);
-            vertices = model1.vertices.ToArray();
-            oSVertices = new OSVertex[vertices.Length + 1]; //todo: change indexing to posessing : indexed by vertices.index propertly (indices start at 1 in .obj files)
+            models = new Model[2];
+            models[0] = new Model("../../../3dEnvironment/" + modelObjName1);
+            models[1] = new Model("../../../3dEnvironment/" + modelObjName2);
 
+            // Cameras
+            double[] camera2Target = { models[1].vertices[1].X, models[1].vertices[1].Y, models[1].vertices[1].Z };
             camera1 = new Camera(DenseVector.OfArray(camera1Position), DenseVector.OfArray(camera1Target));
             camera2 = new Camera(DenseVector.OfArray(camera2Position), DenseVector.OfArray(camera2Target));
 
-            //light
+            // light
             lightDirVector = DenseVector.OfArray(lightDir).Normalize(1);
 
             // Graphics
@@ -80,58 +77,76 @@ namespace GK1_lab4
         {
             alfa += alfaplus;
 
-            Matrix<double> M;
+            Matrix<double> M = Transformations.Identity();
+            Matrix<double> M2 = Transformations.Identity();
             switch (cameraType)
             {
                 default:
                 case 0: //camera is still
                     alfa += alfaplus;
                     M = Transformations.Translation(0, 0, 20) * Transformations.RotationY(alfa);
+                    M2 = Transformations.Translation(0, 0, 20) * Transformations.RotationY(-alfa);
                     break;
                 case 1: //camera traces a point
-                    M =  Transformations.Translation(0, 18 * Math.Sin(alfa), 0);
+                    M = Transformations.Translation(0, 20 * Math.Sin(alfa), 0);
                     camera1.TransformTarget(M);
                     M = camera1.ViewMatrix * M;
+                    M2 = camera1.ViewMatrix * M2;
                     break;
                 case 2: //camera follows point
-                    M = Transformations.Translation(4 * Math.Sin(alfa), 0,  0);
-                    camera2.TransformTarget(M);
-                    camera2.TransformPosition(M);
-                    M = camera2.ViewMatrix;
+                    M2 = Transformations.Translation(8 * Math.Sin(2*alfa), 0, 0);
+                    camera2.TransformTarget(M2);
+                    camera2.TransformPosition(M2);
+                    M = camera2.ViewMatrix * M;
+                    M2 = camera2.ViewMatrix * M2;
                     break;
             }
-            
+
             //Vertices positions
-            Parallel.ForEach(vertices, v =>
+            Parallel.ForEach(models[0].vertices, v =>
             {
                 v.Transform(Transformations.Projection(1, 1) * M);
                 //placing on screen (OnScreenVertices)
-                oSVertices[v.index].X = (int)(this.Width * (1 + v.X) / 2);
-                oSVertices[v.index].Y = (int)(this.Height * (1 + v.Y) / 2);
-                oSVertices[v.index].Z = (int)(this.Height * (1 + v.Z) / 2);
+                models[0].oSVertices[v.index].X = (int)(this.Width * (1 + v.X) / 2);
+                models[0].oSVertices[v.index].Y = (int)(this.Height * (1 + v.Y) / 2);
+                models[0].oSVertices[v.index].Z = (int)(this.Height * (1 + v.Z) / 2);
 
             });
+            //Vertices positions
+            Parallel.ForEach(models[1].vertices, v =>
+            {
+                v.Transform(Transformations.Projection(1, 1)* M2);
+                //placing on screen (OnScreenVertices)
+                models[1].oSVertices[v.index].X = (int)(this.Width * (1 + v.X) / 2);
+                models[1].oSVertices[v.index].Y = (int)(this.Height * (1 + v.Y) / 2);
+                models[1].oSVertices[v.index].Z = (int)(this.Height * (1 + v.Z) / 2);
+
+            });
+
 
             //Light
-            Parallel.ForEach(model1.faces, face =>
-            {
-            //liczy oswietlenie jeszcze bez obrotu
-            double intensity = lightDirVector.DotProduct(Utils.normalVectorOfFace(face));
-                face.ApplyColorIntensity(intensity);
-            });
+            foreach (Model model in models)
+                Parallel.ForEach(model.faces, face =>
+                {
+                //liczy oswietlenie jeszcze bez obrotu
+                double intensity = lightDirVector.DotProduct(Utils.normalVectorOfFace(face));
+                    face.ApplyColorIntensity(intensity);
+                });
 
             //Drawing
-            Graphics.FromImage(bmpFront).Clear(Color.Black);
             zBuffer.Reset();
-            foreach (var face in model1.faces)
-            {
-                OSVertex[] faceOnScreen = { 
-                    oSVertices[face.A.index], 
-                    oSVertices[face.B.index], 
-                    oSVertices[face.C.index] };
-                Filling.Draw(bmpFront, zBuffer, faceOnScreen, face.color);
+            Graphics.FromImage(bmpFront).Clear(Color.Black);
+            foreach (Model model in models)
+                foreach (var face in model.faces)
+                {
+                    OSVertex[] faceOnScreen = {
+                    model.oSVertices[face.A.index],
+                    model.oSVertices[face.B.index],
+                    model.oSVertices[face.C.index] };
+                    Filling.Draw(bmpFront, zBuffer, faceOnScreen, face.color);
 
-            }
+                }
+
             pictureBox1.Image = bmpFront;
         }
 

@@ -15,6 +15,7 @@ namespace GK1_lab4
     {
         public List<Vertex> vertices = new List<Vertex>();
         public List<Face> faces = new List<Face>();
+        public OSVertex[] oSVertices; //screen vertices (x, y coords, while z is used in z-buffer)
         public Model(string fileName)
         {
             Random rand = new Random();
@@ -53,7 +54,7 @@ namespace GK1_lab4
                 }
 
             }
-
+            oSVertices = new OSVertex[vertices.Count + 1]; //todo: change indexing to posessing : indexed by vertices.index propertly (indices start at 1 in .obj files)
         }
 
         public Model(Model m) //todo for making a scene maybe

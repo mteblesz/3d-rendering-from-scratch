@@ -70,5 +70,13 @@ namespace GK1_lab4
             {0, 0, sz, 0},
             {0, 0, 0, 1}});
         }
+        public static Matrix<double> Identity()
+        {
+            return DenseMatrix.OfArray(new double[,] {
+            {1, 0, 0, 0},
+            {0, 1, 0, 0},
+            {0, 0, 1, 0},
+            {0, 0, 0, 1}});
+        }
     }
 }
