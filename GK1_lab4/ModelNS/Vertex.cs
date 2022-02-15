@@ -25,26 +25,23 @@ namespace GK1_lab4
             this.Z = Z;
             this.W = W;
         }
+        public Vector<double> to4DVector()
+        {
+            double[] array = {X, Y, Z, W};
+            return DenseVector.OfArray(array);
+        }
         //public Vertex()
         //{
         //    //empty
         //}
     }
-    public struct OSVertex //OnScreen
+    public struct OSVertex //OnScreenVertex - x, y and depth for z-buffer
     {
         public int X { get; set; }
         public int Y { get; set; }
-        public double Z { get; set; }
+        public int Z { get; set; }
 
         public Point toPoint()
             => new Point((int)X, (int)Y);
-        public static bool operator ==(OSVertex v, OSVertex w)
-        {
-            return w.X == v.X && w.Y == v.Y && w.Z == v.Z;
-        }
-        public static bool operator !=(OSVertex v, OSVertex w)
-        {
-            return !(v == w);
-        }
     }
 }

@@ -17,11 +17,11 @@ namespace GK1_lab4
         {
             //https://math.stackexchange.com/questions/305642/how-to-find-surface-normal-of-a-triangle
 
-            double[] N = new double[3];
+            double[] N = new double[4];
             N[0] = (b.Y - a.Y) * (c.Z - a.Z) - (c.Y - a.Y) * (b.Z - a.Z);
             N[1] = (b.Z - a.Z) * (c.X - a.X) - (b.X - a.X) * (c.Z - a.Z);
             N[2] = (b.X - a.X) * (c.Y - a.Y) - (c.X - a.X) * (b.Y - a.Y);
-
+            N[3] = 0;
             return DenseVector.OfArray(N).Normalize(1);
         }
 

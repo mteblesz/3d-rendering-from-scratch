@@ -19,12 +19,12 @@ namespace GK1_lab4
         string modelObjPath;
 
         //starting conditions
-        private double A = 3; //Oddalenie  //todo na przyblizeniu uciekaja wierzcholski i ucieka czesc figury (wali error bmp)
+        private double A = 2; //Oddalenie  
         double alfa = 0;
         double alfaplus = Math.PI / 100;
         int refreshInterval = 16;
         double[] lightDir = { 1, 0, -1, 0};
-        bool drawEdges = false;
+       
 
 
         Model model;
@@ -68,25 +68,28 @@ namespace GK1_lab4
         private void timer1_Tick(object sender, EventArgs e)
         {
             alfa += alfaplus;
-            Matrix<double> M = P(1,1) * T(0, 0, 4 * A) * R(alfa);
+            Matrix<double> M = Transformations.Projection(1, 1)
+                                * Transformations.Translation(0, 0, 4 * A)
+                                * Transformations.RotationY(alfa);
+            //Vertices positions
             Parallel.ForEach(vertices, v =>
             {
                 double[] Ai = { v.X, v.Y, v.Z, v.W };
                 Vector<double> vc = M * DenseVector.OfArray(Ai);
                 Vector<double> vn = vc / vc[3]; //normalization
-                //pacing on screen
+                //placing on screen (OnScreenVertices)
                 oSVertices[v.index].X = (int)(this.Width * (1 + vn[0]) / 2);
                 oSVertices[v.index].Y = (int)(this.Height * (1 + vn[1]) / 2);
-                oSVertices[v.index].Z = (this.Height * (1 + vn[2]) / 2); //remains double for zbuffer
+                oSVertices[v.index].Z = (int)(this.Height * (1 + vn[2]) / 2);
 
             });
 
             //Light
-            Vector<double> lD = lightDirVector * R(alfa);
+            Vector<double> lD =  Transformations.RotationY(-alfa) * lightDirVector ;
+            lD.Normalize(1);
             Parallel.ForEach(model.faces, face =>
             {
-                double intensity = lD[0] * face.normal[0] + lD[1] * face.normal[1] + lD[2] * face.normal[2]; //dot product lD * normal
-                //intensity = Math.Max(intensity, 1);
+                double intensity = lD.DotProduct(face.normal);
                 face.ApplyColorIntensity(intensity);
             });
 
@@ -100,52 +103,15 @@ namespace GK1_lab4
                 OSVertex[] faceOnScreen = { oSVertices[face.A.index], oSVertices[face.B.index], oSVertices[face.C.index] };
                 Filling.Draw(bmpFront, zBuffer, faceOnScreen, face.color);
             }
-            //edges for testing
-            if (drawEdges)
-                foreach (var face in model.faces)
-                { 
-                    OSVertex[] faceOnScreen = { oSVertices[face.A.index], oSVertices[face.B.index], oSVertices[face.C.index] };
-                    BresehamLine.Draw(bmpFront, faceOnScreen[0].toPoint(), faceOnScreen[1].toPoint(), Color.Orange);
-                    BresehamLine.Draw(bmpFront, faceOnScreen[1].toPoint(), faceOnScreen[2].toPoint(), Color.Orange);
-                    BresehamLine.Draw(bmpFront, faceOnScreen[2].toPoint(), faceOnScreen[0].toPoint(), Color.Orange);
-                }
+            ////edges for testing
+            //    foreach (var face in model.faces)
+            //    { 
+            //        OSVertex[] faceOnScreen = { oSVertices[face.A.index], oSVertices[face.B.index], oSVertices[face.C.index] };
+            //        BresehamLine.Draw(bmpFront, faceOnScreen[0].toPoint(), faceOnScreen[1].toPoint(), Color.Orange);
+            //        BresehamLine.Draw(bmpFront, faceOnScreen[1].toPoint(), faceOnScreen[2].toPoint(), Color.Orange);
+            //        BresehamLine.Draw(bmpFront, faceOnScreen[2].toPoint(), faceOnScreen[0].toPoint(), Color.Orange);
+            //    }
             pictureBox1.Image = bmpFront;
         }
-
-
-
-
-        //------------------------------------------------------------------------
-        //todo zmienic to w/h na 1
-        private Matrix<double> P(double w, double h)
-        {
-            return DenseMatrix.OfArray(new double[,] {
-            {w/h ,0,0,0},
-            {0,1,0,0},
-            {0,0,0,1},
-            {0,0,-1,0}});
-        }
-        private Matrix<double> T(double x, double y, double z)
-        {
-            return DenseMatrix.OfArray(new double[,] {
-            {1, 0, 0, x},
-            {0, 1, 0, y},
-            {0, 0, 1, z},
-            {0, 0, 0, 1}});
-        }
-        private Matrix<double> R(double alfa)
-        {
-            return DenseMatrix.OfArray(new double[,] {
-            {Math.Cos(alfa),0, -Math.Sin(alfa),0},
-            {0,1,0,0},
-            {Math.Sin(alfa),0,Math.Cos(alfa),0},
-            {0,0,0,1}});
-        }
-
-
     }
 }
-//[x, y, z, w]  w==1 docelowo
-// W, H -> wys szer okna
-//alfa - polowa dlogosci bok/ cos malego -> zmienia sie w trakcie działania aplikacji
-//B - odleglosc od kamey np 4a

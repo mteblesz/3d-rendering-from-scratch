@@ -38,15 +38,17 @@ namespace GK1_lab4
 
         public void ApplyColorIntensity(double intensity)
         {
-            if (intensity >= 0)
+            if (intensity < 0)
+                this.color = Color.Black;
+            else
+            {
+                if (intensity > 1)
+                    intensity = 1;
                 this.color = Color.FromArgb(
                     (int)(this.baseColor.R * intensity),
                     (int)(this.baseColor.G * intensity),
                     (int)(this.baseColor.B * intensity));
-            else
-                this.color = Color.Black;
+            }
         }
-
-
     }
 }
