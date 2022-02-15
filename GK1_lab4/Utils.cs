@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,18 +24,25 @@ namespace GK1_lab4
 
             return DenseVector.OfArray(N).Normalize(1);
         }
+
+
+        public static Vector<double> get2DVector(Point P)
+        {
+            double[] arrayP = { P.X, P.Y };
+            return DenseVector.OfArray(arrayP);
+        }
         public static Vector<double> get2DVector(OSVertex osv)
         {
-            double[] dv = { osv.X, osv.Y };
-            return DenseVector.OfArray(dv);
+            double[] arrayOSV = { osv.X, osv.Y };
+            return DenseVector.OfArray(arrayOSV);
         }
-        public static double zValue(OSVertex P, OSVertex A, OSVertex B, OSVertex C) 
+        public static double zValue(Point P, OSVertex A, OSVertex B, OSVertex C) 
         {
             //get barycentric coordinates of P
+            Vector<double> p = get2DVector(P);
             Vector<double> a = get2DVector(A);
             Vector<double> b = get2DVector(B);
             Vector<double> c = get2DVector(C);
-            Vector<double> p = get2DVector(P);
 
             Vector<double> v0 = b - a;
             Vector<double> v1 = c - a;
@@ -51,7 +59,7 @@ namespace GK1_lab4
             double u = 1.0 - v - w;
 
             //calculate z value
-            return v * A.Z + w * B.Z + u * C.Z;
+            return u * A.Z + v * B.Z + w * C.Z;
         }
     }
 }

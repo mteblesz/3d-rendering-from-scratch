@@ -12,11 +12,11 @@ namespace GK1_lab4
         #region Border class
         protected class Border
         {
-            public readonly OSVertex a; //higher
-            public readonly OSVertex b; //lower
+            public readonly Point a; //higher
+            public readonly Point b; //lower
             private double currx;
             private double dx;
-            public Border(OSVertex v, OSVertex w)
+            public Border(Point v, Point w)
             {
                 if (v.Y <= w.Y)
                 {
@@ -55,8 +55,11 @@ namespace GK1_lab4
             }
         }
         #endregion
-        public static void Draw(Bitmap bmp, ZBuffor zBuffor,  OSVertex[] faceVertices, Color fillingColor) 
+        public static void Draw(Bitmap bmp, ZBuffer zBuffor,  OSVertex[] dfaceVertices, Color fillingColor) 
         {
+            Point[] faceVertices = {dfaceVertices[0].toPoint(),
+                                    dfaceVertices[1].toPoint(),
+                                    dfaceVertices[2].toPoint()};
             faceVertices = PointYvalInsertionSort(faceVertices);
             int ymin = faceVertices[0].Y;
             int ymax = faceVertices[2].Y;
@@ -66,17 +69,17 @@ namespace GK1_lab4
             {
                 for (int i = 0; i < 3; i++) //for each point in face
                 {
-                    OSVertex v = faceVertices[i];
+                    Point v = faceVertices[i];
                     if (v.Y == y - 1)
                     {
-                        OSVertex prevv = faceVertices[(i + 2) % 3];
+                        Point prevv = faceVertices[(i + 2) % 3];
                         Border bPrev = new Border(v, prevv);
                         if (prevv.Y > v.Y)
                             aet.Add(bPrev);
                         else if (prevv.Y < v.Y)
                             aet.Remove(aet.Find((Border b) => b.Equals(bPrev)));
 
-                        OSVertex nextv = faceVertices[(i + 1) % 3];
+                        Point nextv = faceVertices[(i + 1) % 3];
                         Border bNext = new Border(v, nextv);
                         if (nextv.Y > v.Y)
                             aet.Add(bNext);
@@ -92,8 +95,7 @@ namespace GK1_lab4
                 for (int x = x1; x <= x2; x++)
                 {
                     //Z-buffor 
-                    double z = Utils.zValue(new OSVertex(x, y), faceVertices[0], faceVertices[1], faceVertices[2]);
-                    //check z buffor condition, if true, draw pixel
+                    double z = Utils.zValue(new Point(x, y), dfaceVertices[0], dfaceVertices[1], dfaceVertices[2]);
                     if (zBuffor.tryValueAt(x, y, z))
                         bmp.SetPixel(x, y, fillingColor);
                 }
@@ -101,7 +103,7 @@ namespace GK1_lab4
 
             }
         }
-        private static OSVertex[] PointYvalInsertionSort(OSVertex[] inputArray) //todo change to only sort 3 numbers
+        private static Point[] PointYvalInsertionSort(Point[] inputArray) //todo change to only sort 3 numbers
         {
             for (int i = 0; i < inputArray.Length - 1; i++)
             {
@@ -109,7 +111,7 @@ namespace GK1_lab4
                 {
                     if (inputArray[j - 1].Y > inputArray[j].Y)
                     {
-                        OSVertex temp = inputArray[j - 1];
+                        Point temp = inputArray[j - 1];
                         inputArray[j - 1] = inputArray[j];
                         inputArray[j] = temp;
                     }

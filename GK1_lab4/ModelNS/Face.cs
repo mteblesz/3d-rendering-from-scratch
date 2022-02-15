@@ -27,7 +27,10 @@ namespace GK1_lab4
             this.B = B;
             this.C = C;
             normal = Utils.normalVectorOfFace(A, B, C);
-            this.color = Color.Transparent;
+            Random rnd = new Random();
+            this.color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256)); ;// Color.Transparent;
+
+
         }
 
 

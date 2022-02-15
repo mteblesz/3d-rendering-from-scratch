@@ -15,7 +15,7 @@ namespace GK1_lab4
 
     public partial class Form1 : Form
     {
-        string modelObjName = "manytorus.obj";
+        string modelObjName = "many.obj";
         string modelObjPath;
 
         //todo hermetyzacja
@@ -25,13 +25,17 @@ namespace GK1_lab4
 
         private double A = 3; //Oddalenie  //todo na przyblizeniu uciekaja wierzcholski i ucieka czesc figury (wali error bmp)
         double alfa = 0;
-        double alfaplus = Math.PI / 360;
-        int refreshInterval = 50;
-        double[] lightDir = { 0, 0, 1 , 0};
+        double alfaplus = Math.PI / 600;
+        int refreshInterval = 250;
+        double[] lightDir = { 0, 0, -1 , 0};
 
         Vector<double> lightDirVector;
 
         Bitmap bmpFront;
+        ZBuffer zBuffer;
+
+
+
         public Form1()
         {
             InitializeComponent();
@@ -50,7 +54,7 @@ namespace GK1_lab4
 
             // Graphics
             bmpFront = new Bitmap(pictureBox1.Image);
-
+            zBuffer = new ZBuffer(pictureBox1.Width, pictureBox1.Height);
 
             // timer
             timer1.Interval = refreshInterval;
@@ -68,34 +72,33 @@ namespace GK1_lab4
                 double[] Ai = { v.X, v.Y, v.Z, v.W };
                 Vector<double> vc = M * DenseVector.OfArray(Ai);
                 Vector<double> vn = vc / vc[3];
-                oSVertices[v.index].X = (int)(this.Width * (1 + vn[0]) / 2);
-                oSVertices[v.index].Y = (int)(this.Height * (1 + vn[1]) / 2);
+                oSVertices[v.index].X = (this.Width * (1 + vn[0]) / 2);
+                oSVertices[v.index].Y = (this.Height * (1 + vn[1]) / 2);
                 oSVertices[v.index].Z = (this.Height * (1 + vn[1]) / 2); //remains double for zbuffer
 
             });
 
             //Light
+            Vector<double> lD = lightDirVector * R(alfa);
             Parallel.ForEach(model.faces, face =>
             {
-                Vector<double> lD = lightDirVector;// * R(-2*alfa);
                 double intensity = lD[0] * face.normal[0] + lD[1] * face.normal[1] + lD[2] * face.normal[2]; //dot product lD * normal
                 //intensity = Math.Max(intensity, 1);
                 if (intensity >= 0)
                     face.color = Color.FromArgb((int)(255 * intensity), (int)(255 * intensity), (int)(255 * intensity));
                 else
-                    face.color = Color.DarkBlue;
+                    face.color = Color.Black;
             });
 
             //Drawing
             Graphics.FromImage(bmpFront).Clear(Color.Black);
-
-            ZBuffor zBuffor = new ZBuffor(this.Width, this.Height);
+            zBuffer.Reset();
             foreach (var face in model.faces)
             {
-                if (face.color == Color.DarkBlue) continue;
+                //if (face.color == Color.Black) continue;
                 //draw face filled
                 OSVertex[] faceOnScreen = { oSVertices[face.A.index], oSVertices[face.B.index], oSVertices[face.C.index] };
-                Filling.Draw(bmpFront, zBuffor, faceOnScreen, face.color);
+                Filling.Draw(bmpFront, zBuffer, faceOnScreen, face.color);
                 //edges
                 //BresehamLine.Draw(bmpFront, faceOnScreen[0].toPoint(), faceOnScreen[1].toPoint(), Color.Orange);
                 //BresehamLine.Draw(bmpFront, faceOnScreen[1].toPoint(), faceOnScreen[2].toPoint(), Color.Orange);
@@ -120,10 +123,10 @@ namespace GK1_lab4
         private Matrix<double> T(double x, double y, double z)
         {
             return DenseMatrix.OfArray(new double[,] {
-            {1,0, 0,x},
-            {0,1,0,y},
-            {0,0,1,z},
-            {0,0,0,1}});
+            {1, 0, 0, x},
+            {0, 1, 0, y},
+            {0, 0, 1, z},
+            {0, 0, 0, 1}});
         }
         private Matrix<double> R(double alfa)
         {

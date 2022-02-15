@@ -32,19 +32,19 @@ namespace GK1_lab4
     }
     public struct OSVertex //OnScreen
     {
-        public int X { get; set; }
-        public int Y { get; set; }
+        public double X { get; set; }
+        public double Y { get; set; }
         public double Z { get; set; }
 
 
-        public OSVertex(int x, int y, int z = 0)
+        public OSVertex(double x, double y, double z = 0)
         {
             X = x;
             Y = y;
             Z = z;
         }
         public Point toPoint()
-            => new Point(X, Y);
+            => new Point((int)X, (int)Y);
         public static bool operator ==(OSVertex v, OSVertex w)
         {
             return w.X == v.X && w.Y == v.Y && w.Z == v.Z;

@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace GK1_lab4
 {
-    public class ZBuffor
+    public class ZBuffer
     {
         public int Width { get; set; }
         public int Heigth { get; set; }
         private double[,] Values { get; set; }
 
-        public ZBuffor(int width, int heigth)
+        public ZBuffer(int width, int heigth)
         {
             Width = width;  
             Heigth = heigth;
@@ -35,6 +35,12 @@ namespace GK1_lab4
             }
             return false;
 
+        }
+        public void Reset()
+        {
+            for (int i = 0; i < Width; i++)
+                for (int j = 0; j < Heigth; j++)
+                    Values[i, j] = double.NegativeInfinity; //Anything would be closer than that
         }
 
     }
