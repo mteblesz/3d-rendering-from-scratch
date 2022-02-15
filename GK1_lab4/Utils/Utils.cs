@@ -37,6 +37,10 @@ namespace GK1_lab4
             N[3] = 0;
             return DenseVector.OfArray(N).Normalize(1);
         }
+        public static Vector<double> normalVectorOfFace(Face f)
+        {
+            return normalVectorOfFace(f.A, f.B, f.C);
+        }
 
 
         public static Vector<double> get2DVector(Point P)

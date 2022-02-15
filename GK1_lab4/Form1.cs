@@ -19,7 +19,7 @@ namespace GK1_lab4
         string modelObjPath;
 
         //starting conditions
-        private double A = 2; //Oddalenie  
+        private double A = 3; //Oddalenie  
         double alfa = 0;
         double alfaplus = Math.PI / 100;
         int refreshInterval = 16;
@@ -74,21 +74,20 @@ namespace GK1_lab4
             //Vertices positions
             Parallel.ForEach(vertices, v =>
             {
-                double[] Ai = { v.X, v.Y, v.Z, v.W };
-                Vector<double> vc = M * DenseVector.OfArray(Ai);
-                Vector<double> vn = vc / vc[3]; //normalization
+                v.Transform(M);
                 //placing on screen (OnScreenVertices)
-                oSVertices[v.index].X = (int)(this.Width * (1 + vn[0]) / 2);
-                oSVertices[v.index].Y = (int)(this.Height * (1 + vn[1]) / 2);
-                oSVertices[v.index].Z = (int)(this.Height * (1 + vn[2]) / 2);
+                oSVertices[v.index].X = (int)(this.Width * (1 + v.X) / 2);
+                oSVertices[v.index].Y = (int)(this.Height * (1 + v.Y) / 2);
+                oSVertices[v.index].Z = (int)(this.Height * (1 + v.Z) / 2);
 
             });
 
             //Light
-            Vector<double> lD =  Transformations.RotationY(-alfa) * lightDirVector ;
+            Vector<double> lD =  Transformations.RotationY(-alfa) * lightDirVector ; //obracanie swiatla wewnatrz modelu
             lD.Normalize(1);
             Parallel.ForEach(model.faces, face =>
             {
+                //liczy oswietlenie jeszcze bez obrotu
                 double intensity = lD.DotProduct(face.normal);
                 face.ApplyColorIntensity(intensity);
             });
