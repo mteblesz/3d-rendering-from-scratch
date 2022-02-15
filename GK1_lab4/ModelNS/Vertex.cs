@@ -37,6 +37,7 @@ namespace GK1_lab4
             double[] array = { X, Y, Z, W };
             return DenseVector.OfArray(array);
         }
+
         private Vector<double> to4DVectorOrg()
         {
             double[] array = { x, y, z, w };
@@ -53,6 +54,7 @@ namespace GK1_lab4
             this.W = vc[3];
             return this;
         }
+
     }
 
 }

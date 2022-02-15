@@ -23,7 +23,7 @@ namespace GK1_lab4
         double alfa = 0;
         double alfaplus = Math.PI / 100;
         int refreshInterval = 16;
-        double[] lightDir = { 1, 0, -1, 0};
+        double[] lightDir = { 0, -3, -2, 0};
        
 
 
@@ -83,12 +83,10 @@ namespace GK1_lab4
             });
 
             //Light
-            Vector<double> lD =  Transformations.RotationY(-alfa) * lightDirVector ; //obracanie swiatla wewnatrz modelu
-            lD.Normalize(1);
             Parallel.ForEach(model.faces, face =>
             {
-                //liczy oswietlenie jeszcze bez obrotu
-                double intensity = lD.DotProduct(face.normal);
+            //liczy oswietlenie jeszcze bez obrotu
+            double intensity = lightDirVector.DotProduct(Utils.normalVectorOfFace(face));
                 face.ApplyColorIntensity(intensity);
             });
 
@@ -97,20 +95,14 @@ namespace GK1_lab4
             zBuffer.Reset();
             foreach (var face in model.faces)
             {
-                //if (face.color == Color.Black) continue;
-                //draw face filled
                 OSVertex[] faceOnScreen = { oSVertices[face.A.index], oSVertices[face.B.index], oSVertices[face.C.index] };
                 Filling.Draw(bmpFront, zBuffer, faceOnScreen, face.color);
+
             }
-            ////edges for testing
-            //    foreach (var face in model.faces)
-            //    { 
-            //        OSVertex[] faceOnScreen = { oSVertices[face.A.index], oSVertices[face.B.index], oSVertices[face.C.index] };
-            //        BresehamLine.Draw(bmpFront, faceOnScreen[0].toPoint(), faceOnScreen[1].toPoint(), Color.Orange);
-            //        BresehamLine.Draw(bmpFront, faceOnScreen[1].toPoint(), faceOnScreen[2].toPoint(), Color.Orange);
-            //        BresehamLine.Draw(bmpFront, faceOnScreen[2].toPoint(), faceOnScreen[0].toPoint(), Color.Orange);
-            //    }
             pictureBox1.Image = bmpFront;
         }
+
+
+
     }
 }
