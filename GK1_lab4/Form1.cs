@@ -23,7 +23,7 @@ namespace GK1_lab4
         double alfa = 0;
         double alfaplus = Math.PI / 400;
         int refreshInterval = 16;
-        double[] lightDir = { 0, 0, -1, 0};
+        double[] lightDir = { 1, 0, -1, 0};
         bool drawEdges = false;
 
 
