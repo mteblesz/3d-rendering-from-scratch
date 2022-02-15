@@ -7,33 +7,44 @@ using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 
-namespace GK1_lab4.ModelNS
+namespace GK1_lab4
 {
     public class Face
     {
         public int index { get; set; }
-        public int indexA { get; set; }
-        public int indexB { get; set; }
-        public int indexC { get; set; }
+        public Vertex A { get; set; }
+        public Vertex B { get; set; }
+        public Vertex C { get; set; }
+        public Vector<double> normal { get; set; }
+
+        private Color baseColor { get; set; }
         public Color color { get; set; }
 
-        public Vector<double>? normal { get; set; }
 
-        public Face(int index, int indexA, int indexB, int indexC)
+        public Face(int index, Vertex A, Vertex B, Vertex C)
         {
             this.index = index;
-            this.indexA = indexA;
-            this.indexB = indexB;
-            this.indexC = indexC;
-            this.color = Color.Transparent;
+            this.A = A;
+            this.B = B;
+            this.C = C;
+            normal = Utils.normalVectorOfFace(A, B, C);
+            color = Color.Transparent;
+
+            //colorful faces
+            //Random rnd = new Random();
+            baseColor = Color.White;// Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+
         }
-        public Face(int index, int indexA, int indexB, int indexC, Color color)
+
+        public void ApplyColorIntensity(double intensity)
         {
-            this.index = index;
-            this.indexA = indexA;
-            this.indexB = indexB;
-            this.indexC = indexC;
-            this.color = color;
+            if (intensity >= 0)
+                this.color = Color.FromArgb(
+                    (int)(this.baseColor.R * intensity),
+                    (int)(this.baseColor.G * intensity),
+                    (int)(this.baseColor.B * intensity));
+            else
+                this.color = Color.Black;
         }
 
 

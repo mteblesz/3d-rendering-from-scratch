@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
-using GK1_lab4.ModelNS;
 
 namespace GK1_lab4
 {
@@ -19,20 +18,24 @@ namespace GK1_lab4
         string modelObjName = "manytorus.obj";
         string modelObjPath;
 
-        //todo hermetyzacja
-        Model model;
-        Vertex[] vertices;
-        Point[] vs;
-
+        //starting conditions
         private double A = 3; //Oddalenie  //todo na przyblizeniu uciekaja wierzcholski i ucieka czesc figury (wali error bmp)
-        double alfa = Math.PI / 10;
+        double alfa = 0;
         double alfaplus = Math.PI / 100;
         int refreshInterval = 16;
-        double[] lightDir = { 0, 0, -1 , 0};
+        double[] lightDir = { 1, 0, -1, 0};
+        bool drawEdges = false;
+
+
+        Model model;
+        Vertex[] vertices;
+        OSVertex[] oSVertices; //screen vertices (x, y coords, while z is used in z-buffer)
 
         Vector<double> lightDirVector;
-
         Bitmap bmpFront;
+        ZBuffer zBuffer;
+
+
         public Form1()
         {
             InitializeComponent();
@@ -40,18 +43,20 @@ namespace GK1_lab4
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            this.Height = pictureBox1.Height;
+            this.Width = pictureBox1.Width;
             // Model
             modelObjPath = "../../../3dEnvironment/" + modelObjName;
             model = new Model(modelObjPath);
             vertices = model.vertices.ToArray();
-            vs = new Point[vertices.Length + 1]; //indexed by vertices.index propertly (indices start at 1 in .obj files)
+            oSVertices = new OSVertex[vertices.Length + 1]; //indexed by vertices.index propertly (indices start at 1 in .obj files)
 
             //light
             lightDirVector = DenseVector.OfArray(lightDir).Normalize(1);
 
             // Graphics
             bmpFront = new Bitmap(pictureBox1.Image);
-
+            zBuffer = new ZBuffer(pictureBox1.Width, pictureBox1.Height);
 
             // timer
             timer1.Interval = refreshInterval;
@@ -63,52 +68,47 @@ namespace GK1_lab4
         private void timer1_Tick(object sender, EventArgs e)
         {
             alfa += alfaplus;
-            Matrix<double> M = P(this.Size.Width, this.Size.Height) * T(0, 0, 4 * A) * R(alfa);
+            Matrix<double> M = P(1,1) * T(0, 0, 4 * A) * R(alfa);
             Parallel.ForEach(vertices, v =>
             {
-                double[] Ai = { v.x, v.y, v.z, v.w };
+                double[] Ai = { v.X, v.Y, v.Z, v.W };
                 Vector<double> vc = M * DenseVector.OfArray(Ai);
-                Vector<double> vn = vc / vc[3];
-                vs[v.index].X = (int)(this.Width * (1 + vn[0]) / 2);
-                vs[v.index].Y = (int)(this.Height * (1 + vn[1]) / 2);
+                Vector<double> vn = vc / vc[3]; //normalization
+                //pacing on screen
+                oSVertices[v.index].X = (int)(this.Width * (1 + vn[0]) / 2);
+                oSVertices[v.index].Y = (int)(this.Height * (1 + vn[1]) / 2);
+                oSVertices[v.index].Z = (this.Height * (1 + vn[2]) / 2); //remains double for zbuffer
 
             });
 
             //Light
+            Vector<double> lD = lightDirVector * R(alfa);
             Parallel.ForEach(model.faces, face =>
             {
-                Vector<double> lD = lightDirVector;// * R(alfa);
                 double intensity = lD[0] * face.normal[0] + lD[1] * face.normal[1] + lD[2] * face.normal[2]; //dot product lD * normal
                 //intensity = Math.Max(intensity, 1);
-                if (intensity >= 0)
-                    face.color = Color.FromArgb((int)(255 * intensity), (int)(255 * intensity), (int)(255 * intensity));
-                else
-                    face.color = Color.Black;
+                face.ApplyColorIntensity(intensity);
             });
 
             //Drawing
             Graphics.FromImage(bmpFront).Clear(Color.Black);
-            if(false)
+            zBuffer.Reset();
             foreach (var face in model.faces)
             {
-                if (face.color == Color.Transparent)
-                {
-                    Point[] ind = { vs[face.indexA], vs[face.indexB], vs[face.indexC] };
-                    //edges only
-                    BresehamLine.Draw(bmpFront, ind[0], ind[1], Color.Orange);
-                    BresehamLine.Draw(bmpFront, ind[1], ind[2], Color.Orange);
-                    BresehamLine.Draw(bmpFront, ind[2], ind[0], Color.Orange);
+                //if (face.color == Color.Black) continue;
+                //draw face filled
+                OSVertex[] faceOnScreen = { oSVertices[face.A.index], oSVertices[face.B.index], oSVertices[face.C.index] };
+                Filling.Draw(bmpFront, zBuffer, faceOnScreen, face.color);
+            }
+            //edges for testing
+            if (drawEdges)
+                foreach (var face in model.faces)
+                { 
+                    OSVertex[] faceOnScreen = { oSVertices[face.A.index], oSVertices[face.B.index], oSVertices[face.C.index] };
+                    BresehamLine.Draw(bmpFront, faceOnScreen[0].toPoint(), faceOnScreen[1].toPoint(), Color.Orange);
+                    BresehamLine.Draw(bmpFront, faceOnScreen[1].toPoint(), faceOnScreen[2].toPoint(), Color.Orange);
+                    BresehamLine.Draw(bmpFront, faceOnScreen[2].toPoint(), faceOnScreen[0].toPoint(), Color.Orange);
                 }
-            }
-            foreach (var face in model.faces)
-            {
-                //if (face.color == Color.Black) continue
-                
-                    Point[] ind = { vs[face.indexA], vs[face.indexB], vs[face.indexC] };
-                    //draw face filled
-                    Filling.Draw(bmpFront, ind, face.color);
-                
-            }
             pictureBox1.Image = bmpFront;
         }
 
@@ -120,7 +120,7 @@ namespace GK1_lab4
         private Matrix<double> P(double w, double h)
         {
             return DenseMatrix.OfArray(new double[,] {
-            {1 ,0,0,0},
+            {w/h ,0,0,0},
             {0,1,0,0},
             {0,0,0,1},
             {0,0,-1,0}});
@@ -128,10 +128,10 @@ namespace GK1_lab4
         private Matrix<double> T(double x, double y, double z)
         {
             return DenseMatrix.OfArray(new double[,] {
-            {1,0, 0,x},
-            {0,1,0,y},
-            {0,0,1,z},
-            {0,0,0,1}});
+            {1, 0, 0, x},
+            {0, 1, 0, y},
+            {0, 0, 1, z},
+            {0, 0, 0, 1}});
         }
         private Matrix<double> R(double alfa)
         {
