@@ -14,7 +14,9 @@ namespace GK1_lab4
         public Vector<double> Target { get; set; }
         public readonly Vector<double> UpWorld;
 
-        public Vector<double> DirectionAtSelf { get; set; }
+        public Vector<double> DirAtSelf { get; set; }
+        public Vector<double> Right { get; set; }
+        public Vector<double> Up { get; set; }
 
 
 
@@ -25,7 +27,9 @@ namespace GK1_lab4
             double[] uw = { 0, 1, 0 };
             UpWorld = DenseVector.OfArray(uw);
 
-           // DirectionAtSelf = 
+            DirAtSelf = (Position - Target).Normalize(1);
+            Right = Utils.Cross3d(UpWorld, DirAtSelf).Normalize(1);
+            Up = Utils.Cross3d(DirAtSelf, Right).Normalize(1);
         }
     }
 }

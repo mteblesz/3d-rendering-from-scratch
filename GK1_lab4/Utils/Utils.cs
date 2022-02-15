@@ -12,7 +12,20 @@ namespace GK1_lab4
 {
     public static class Utils
     {
+        public static Vector<double> Cross3d(Vector<double> left, Vector<double> right)
+        {//https://stackoverflow.com/questions/11759720/cross-product-using-math-net-numerics-with-c-sharp
+            if ((left.Count != 3 || right.Count != 3))
+            {
+                string message = "Vectors must have a length of 3.";
+                throw new Exception(message);
+            }
+            Vector<double> result = new DenseVector(3);
+            result[0] = left[1] * right[2] - left[2] * right[1];
+            result[1] = -left[0] * right[2] + left[2] * right[0];
+            result[2] = left[0] * right[1] - left[1] * right[0];
 
+            return result;
+        }
         public static Vector<double> normalVectorOfFace(Vertex a, Vertex b, Vertex c)
         {
             //https://math.stackexchange.com/questions/305642/how-to-find-surface-normal-of-a-triangle
