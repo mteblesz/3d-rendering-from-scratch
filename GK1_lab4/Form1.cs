@@ -21,7 +21,7 @@ namespace GK1_lab4
         //starting conditions
         private double A = 3; //Oddalenie  //todo na przyblizeniu uciekaja wierzcholski i ucieka czesc figury (wali error bmp)
         double alfa = 0;
-        double alfaplus = Math.PI / 400;
+        double alfaplus = Math.PI / 100;
         int refreshInterval = 16;
         double[] lightDir = { 1, 0, -1, 0};
         bool drawEdges = false;
@@ -87,10 +87,7 @@ namespace GK1_lab4
             {
                 double intensity = lD[0] * face.normal[0] + lD[1] * face.normal[1] + lD[2] * face.normal[2]; //dot product lD * normal
                 //intensity = Math.Max(intensity, 1);
-                if (intensity >= 0)
-                    face.color = Color.FromArgb((int)(255 * intensity), (int)(255 * intensity), (int)(255 * intensity));
-                else
-                    face.color = Color.Black;
+                face.ApplyColorIntensity(intensity);
             });
 
             //Drawing

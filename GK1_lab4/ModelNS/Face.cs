@@ -17,6 +17,7 @@ namespace GK1_lab4
         public Vertex C { get; set; }
         public Vector<double> normal { get; set; }
 
+        private Color baseColor { get; set; }
         public Color color { get; set; }
 
 
@@ -27,10 +28,23 @@ namespace GK1_lab4
             this.B = B;
             this.C = C;
             normal = Utils.normalVectorOfFace(A, B, C);
-            Random rnd = new Random();
-            this.color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256)); ;// Color.Transparent;
+            color = Color.Transparent;
 
+            //colorful faces
+            //Random rnd = new Random();
+            baseColor = Color.White;// Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
 
+        }
+
+        public void ApplyColorIntensity(double intensity)
+        {
+            if (intensity >= 0)
+                this.color = Color.FromArgb(
+                    (int)(this.baseColor.R * intensity),
+                    (int)(this.baseColor.G * intensity),
+                    (int)(this.baseColor.B * intensity));
+            else
+                this.color = Color.Black;
         }
 
 
